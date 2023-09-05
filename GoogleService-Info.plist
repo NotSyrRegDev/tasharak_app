@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>411296530889-0es2qgk9ivo2v53u3ea7khdkc08m7nbe.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.411296530889-0es2qgk9ivo2v53u3ea7khdkc08m7nbe</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD_psgXD3QkWMLtAadljjhm1JMn9x9dtIs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>411296530889</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tasharak.app</string>
+	<key>PROJECT_ID</key>
+	<string>tasharakapp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tasharakapp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:411296530889:ios:f38f44c26499ed54fea818</string>
+</dict>
+</plist>

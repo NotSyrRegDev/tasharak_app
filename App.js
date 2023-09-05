@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import React from "react";
+import { Navigation } from "./src/navigation/Navigation";
+import { useFonts } from 'expo-font';
+import { AuthContextProvider } from './src/context/AuthContext';
+import { AppContextProvider } from './src/context/AppContext';
 
-export default function App() {
+function App() {
+ 
+  const [loaded] = useFonts({
+
+    Alexandria_thin: require('./src/assets/fonts/Alexandria-Thin.ttf'),
+    Alexandria_light: require('./src/assets/fonts/Alexandria-Light.ttf'),
+    Alexandria_regular: require('./src/assets/fonts/Alexandria-Regular.ttf'),
+    Alexandria_medium: require('./src/assets/fonts/Alexandria-Medium.ttf'),
+    Alexandria_semi_bold: require('./src/assets/fonts/Alexandria-SemiBold.ttf'),
+    Alexandria_bold: require('./src/assets/fonts/Alexandria-Bold.ttf'),
+
+  });
+
+  if (!loaded) { 
+    return null;
+  }
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+     <AuthContextProvider>
+        <AppContextProvider  >
+
+       
+      <Navigation />
+      <ExpoStatusBar style="auto" />
+      </AppContextProvider>
+      </AuthContextProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
