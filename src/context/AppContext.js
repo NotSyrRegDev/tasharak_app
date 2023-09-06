@@ -59,6 +59,7 @@ export const AppContextProvider = ({ children }) => {
         const querySnapshot = await getDocs(q);
         const categoriesData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
         setCategoriesArray(categoriesData);
+        setIsLoading(false);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -81,8 +82,9 @@ export const AppContextProvider = ({ children }) => {
           return productData;
         });
         setAllProducts(allProducts);
+        setIsLoading(false);
       } catch (error) {
-      
+        setIsLoading(false);
       }
     };
     getAllProducts();

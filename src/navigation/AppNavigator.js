@@ -27,6 +27,7 @@ import WhoWeAreScreen from '../screens/WhoWeAreScreen';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import NeedLoginScreen from '../screens/NeedLoginScreen';
 import SearchScreen from '../screens/SearchScreen';
+import LazyWaitingScreen from '../screens/LazyWaitingScreen';
 
 const Stack = createStackNavigator();
 
@@ -275,6 +276,8 @@ export const AppNavigator = () => {
   
 
   <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
+
+  <Stack.Screen name="LazyWaitingScreen" component={LazyWaitingScreen} options={{ headerShown: false }} />
   
 </Stack.Navigator>
 

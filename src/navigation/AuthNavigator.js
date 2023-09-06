@@ -38,6 +38,7 @@ import BookingDetailScreen from '../screens/BookingDetailsScreen';
 import AddProductRating from '../screens/AddProductRating';
 import AddDeliveryRating from '../screens/AddDeliveryRating';
 import AddSellerRating from '../screens/AddSellerRating';
+import LazyWaitingScreen from '../screens/LazyWaitingScreen';
 
 
 const Stack = createStackNavigator();
@@ -122,6 +123,8 @@ export const AuthNavigator = () => {
   <Stack.Screen name="AddProductRating" component={AddProductRating} options={{ headerShown: false }} />
 
   <Stack.Screen name="AddDeliveryRating" component={AddDeliveryRating} options={{ headerShown: false }} />
+
+  <Stack.Screen name="LazyWaitingScreen" component={LazyWaitingScreen} options={{ headerShown: false }} />
   
 </Stack.Navigator>
 

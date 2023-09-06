@@ -1,17 +1,18 @@
-import { View, Text ,StatusBar , StyleSheet , ScrollView , Image ,TouchableOpacity , TextInput , KeyboardAvoidingView  , SafeAreaView , Keyboard } from 'react-native'
-import React , {useState , useContext , useEffect} from 'react'
+import { View, Text ,StatusBar , StyleSheet , ScrollView , Image ,TouchableOpacity , TextInput , KeyboardAvoidingView  , SafeAreaView , Keyboard  , ActivityIndicator} from 'react-native'
+import React , {useState , useContext , useEffect , useRef} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {  AuthenticationContext } from '../context/AuthContext';
-import { ActivityIndicator, Colors } from "react-native-paper";
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { AppContext } from '../context/AppContext';
 
 const SignupScreen = ({ navigation }) => {
+  const scrollViewRef = useRef();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userEmail, setEmail] = useState('');
+  const [userPhone, setUserPhone] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setConfirmPassword] = useState('');
   const [companyName , setCompanyName] = useState('');
@@ -42,22 +43,33 @@ const SignupScreen = ({ navigation }) => {
       setKeyboardOpen(false);
     };
 
+    const handlePhoneChange = (text) => {
+   
+      const cleanedText = text.replace(/[^0-9]/g, '');
+      if (cleanedText.length <= 10) {
+        setUserPhone(cleanedText);
+      }
+    };
 
 
   const {  onRegisterCompany , onRegisterPersonal ,  isLoading, error } = useContext(AuthenticationContext);
 
   return (
-    <SafeAreaView>
-  <ScrollView>
+   
+  <ScrollView 
+  style={{ flex: 1 }}
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+  >
 
 <View style={[ styles.container , isKeyboardOpen ? styles.keyboardOn : '' ]}  >
 
  <StatusBar translucent backgroundColor="black" />
   { /* TOP HEADER TEXT */ }
-  <View className="flex flex-row items-center  pt-20 pb-5" style={styles.topAreaHeadins}  >
+  <View className="flex flex-row items-center  pt-24 pb-5" style={styles.topAreaHeadins}  >
 
 <View>
-<TouchableOpacity className="px-4" onPress={() => navigation.navigate('SignupOptionsScreen') } >
+<TouchableOpacity className="px-2" onPress={() => navigation.navigate('SignupOptionsScreen') } >
 <SimpleLineIcons name="arrow-right" size={22} color="#fff" />
 </TouchableOpacity>
 </View>
@@ -65,7 +77,7 @@ const SignupScreen = ({ navigation }) => {
 <View>
 <Text className="text-3xl text-center text-white"  style={styles.title} > أنشئ حساب </Text>
 
-<Text className="mt-3  text-center text-white text-lg" style={styles.subtitle} >   إنشاء حساب شخصي أو حساب شركة </Text>
+<Text className="mt-3  text-center text-white text-base" style={styles.font} >   إنشاء حساب شخصي أو حساب شركة </Text>
 </View>
   
 
@@ -78,10 +90,13 @@ const SignupScreen = ({ navigation }) => {
 
   <View className="mt-12" >
   {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
     <KeyboardAvoidingView>
 
@@ -130,6 +145,22 @@ const SignupScreen = ({ navigation }) => {
       onChangeText={(text) => setEmail(text) }
     />
   </View>
+
+  <View className="mb-8">
+    <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+       رقم الهاتف <Text className="text-red-500 text-base" > * </Text>  
+    </Text>
+    <TextInput
+      style={styles.inputStyle}
+      className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
+      id="phone"
+      placeholder="05xxxxxxx"
+      keyboardType="numeric"
+      value={userPhone}
+      onChangeText={handlePhoneChange}
+    />
+  </View>
+
   {accountType == 'company' && (
     <View>
 
@@ -239,7 +270,7 @@ const SignupScreen = ({ navigation }) => {
         <TouchableOpacity
     className="mt-8  rounded-full p-3"
       style={styles.button}
-      onPress={() => onRegisterCompany( accountType , companyName , companyNumber , firstName , lastName ,  userEmail, password, passwordConfirm , checkAgreement )}
+      onPress={() => onRegisterCompany( accountType , companyName , companyNumber , firstName , lastName ,  userEmail, userPhone , password, passwordConfirm , checkAgreement )}
       >
       
       <Text style={styles.buttonText}>  إنشاء حساب شركة </Text>
@@ -248,7 +279,7 @@ const SignupScreen = ({ navigation }) => {
         <TouchableOpacity
     className="mt-8  rounded-full p-3"
       style={styles.button}
-      onPress={() => onRegisterPersonal( accountType , firstName , lastName ,  userEmail, password, passwordConfirm , checkAgreement )}
+      onPress={() => onRegisterPersonal( accountType , firstName , lastName ,  userEmail, userPhone , password, passwordConfirm , checkAgreement )}
       >
       
       <Text style={styles.buttonText}>  إنشاء حساب شخصي </Text>
@@ -257,7 +288,9 @@ const SignupScreen = ({ navigation }) => {
        </View>
    
       ) : (
-        <ActivityIndicator animating={true} color={'#007FB7'} />
+        <View className="mt-8 mb-8" >
+    <ActivityIndicator animating={true} color={'#007FB7'} />
+    </View>
       )}
 
       
@@ -283,7 +316,7 @@ const SignupScreen = ({ navigation }) => {
   </View>
    
   </ScrollView>
-    </SafeAreaView>
+  
   
     )
   }
@@ -328,6 +361,7 @@ const SignupScreen = ({ navigation }) => {
       color: COLORS.White,
       fontFamily: FONTFAMILY.font_bold,
       fontWeight: 'bold',
+      lineHeight: 60,
       
     },
     textInput: {
@@ -402,6 +436,9 @@ const SignupScreen = ({ navigation }) => {
     keyboardOn: {
       paddingBottom: 150,
     },
+    font: {
+      fontFamily: FONTFAMILY.font_regular,
+    }
   
   });
 

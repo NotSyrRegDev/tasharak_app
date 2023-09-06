@@ -92,7 +92,7 @@ export const AuthContextProvider = ({ children }) => {
       });
   };
 
-  const onRegisterPersonal = async (accountType , fName , lName , email, password, repeatedPassword , checkAgreement) => {
+  const onRegisterPersonal = async (accountType , fName , lName , email, userPhone ,  password, repeatedPassword , checkAgreement) => {
     setIsLoading(true);
 
     if (fName == '' ) {
@@ -115,6 +115,15 @@ export const AuthContextProvider = ({ children }) => {
 
     if (email == '' ) {
       setError("يرجى ادخال الايميل الخاص بك");
+       setTimeout(() => {
+      setError('');
+      
+    } , 3000);
+      return;
+    }
+
+    if (userPhone == '' ) {
+      setError("يرجى ادخال رقم هاتفك");
        setTimeout(() => {
       setError('');
       
@@ -166,6 +175,7 @@ export const AuthContextProvider = ({ children }) => {
     first_name: fName,
     last_name: lName,
     email: email,
+    phone: userPhone,
     account_type : accountType,
     thum: '',
     my_revenue: 0,
@@ -186,10 +196,8 @@ export const AuthContextProvider = ({ children }) => {
           await AsyncStorage.setItem('tashark_user', userObject);
 
           const user = userCredential.user;
-              // Send verification email
-    // await sendEmailVerification(user);
-    setUser(user);
-    setIsLoading(false);
+          setUser(user);
+          setIsLoading(false);
 
         } catch (error) {
           console.log('Error storing data:', error);
@@ -219,7 +227,7 @@ export const AuthContextProvider = ({ children }) => {
       });
   };
 
-  const onRegisterCompany = async (accountType , companyName , companyNumber , fName , lName , email, password, repeatedPassword , checkAgreement ) => {
+  const onRegisterCompany = async (accountType , companyName , companyNumber , fName , lName , email, userPhone , password, repeatedPassword , checkAgreement ) => {
     setIsLoading(true);
 
     if (fName == '' ) {
@@ -242,6 +250,15 @@ export const AuthContextProvider = ({ children }) => {
 
     if (email == '' ) {
       setError("يرجى ادخال الايميل الخاص بك");
+       setTimeout(() => {
+      setError('');
+      
+    } , 3000);
+      return;
+    }
+
+    if (userPhone == '' ) {
+      setError("يرجى ادخال رقم هاتفك");
        setTimeout(() => {
       setError('');
       
@@ -311,6 +328,7 @@ export const AuthContextProvider = ({ children }) => {
     first_name: fName,
     last_name: lName,
     email: email,
+    phone: userPhone,
     account_type : accountType,
     company_name : companyName,
     company_number: companyNumber
