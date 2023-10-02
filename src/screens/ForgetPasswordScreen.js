@@ -1,10 +1,10 @@
 import { View , StyleSheet , Image  , StatusBar , Text , TextInput  , TouchableOpacity , KeyboardAvoidingView , ScrollView , SafeAreaView } from 'react-native'
-import React , {useState}  from 'react';
+import React , {useState ,useRef}  from 'react';
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { fetchSignInMethodsForEmail , sendPasswordResetEmail , auth } from '../../firebase';
  
 const ForgetPasswordScreen = ( { navigation } ) => {
-
+  const scrollViewRef = useRef();
   const [email , setEmail ] = useState('');
   const [error , setError] = useState('');
   const [loading , setLoading] = useState(false);
@@ -57,7 +57,11 @@ const ForgetPasswordScreen = ( { navigation } ) => {
   return (
 
       <SafeAreaView>
-    <ScrollView contentContainerStyle={styles.container} >
+        <ScrollView
+        
+  ref={scrollViewRef}
+  contentContainerStyle={styles.container} 
+      >
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
@@ -78,15 +82,22 @@ const ForgetPasswordScreen = ( { navigation } ) => {
    <View className="w-full max-w-sm mt-16" style={styles.inputContainer} >
 
    {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
-   {success && (
-          <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5" >
+        {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
+        
         )}
   
 <View className="mb-8">

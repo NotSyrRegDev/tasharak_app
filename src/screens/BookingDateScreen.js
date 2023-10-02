@@ -1,5 +1,5 @@
 import { View, Text  , StyleSheet , StatusBar  , ScrollView , TouchableOpacity , Button} from 'react-native'
-import React , {useContext , useState} from 'react'
+import React , {useContext , useState , useRef} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AppContext } from '../context/AppContext';
 import LoadingContainer from '../components/LoadingContainer';
@@ -9,6 +9,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const BookingDateScreen = ({ navigation  }) => {
+
+  const scrollViewRef = useRef();
 
   const { isLoading , error , setError , setBookingProduct , bookingProduct } = useContext(AppContext);
   const [startDate, setStartDate] = useState(new Date());
@@ -61,7 +63,11 @@ if (diffDays < bookingProduct?.minDay || diffDays > bookingProduct?.maxDay) {
   return (
    
       
-      <ScrollView>
+    <ScrollView
+    style={{ flex: 1 }}
+ref={scrollViewRef}
+contentContainerStyle={{ flexGrow: 1 }} 
+  >
 
       {isLoading && (
        <LoadingContainer />
@@ -89,10 +95,14 @@ if (diffDays < bookingProduct?.minDay || diffDays > bookingProduct?.maxDay) {
       <View className="mt-12" >
 
       {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
+
 
         <Text className="text-xl text-black text-left" style={styles.font} >  اختيار التواريخ </Text>
         

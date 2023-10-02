@@ -62,21 +62,24 @@ const EditAddressScreen = ({ navigation  , route }) => {
     }
     getInfoFromFireStore();
   } , []);
+
+  const scrollViewRef = useRef();
   
   return (
     
     <SafeAreaView style={styles.container} >
 
-    <ScrollView>
+    <ScrollView
+       
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+      >
+
     {!fullScreen  ? (
       <View>
 
 
 <StatusBar translucent backgroundColor="black" />
-
-
-{ /* TOP HEADER TEXT */ }
-<TopProfileNavigator navigation={navigation} text={"تعديل عنوان"} />
 
 { /* CHOOSING CATEGORY */ }
 
@@ -88,15 +91,22 @@ const EditAddressScreen = ({ navigation  , route }) => {
         <View style={styles.containerMargin} className="mt-10" >
 
         {error && (
-      <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-        <Text style={styles.errorText}  >{error}</Text>
-      </View>
-    )}
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </>
+      )}
 
-    {success && (
+        {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
           <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
+        
         )}
 
 <View className="mb-8">

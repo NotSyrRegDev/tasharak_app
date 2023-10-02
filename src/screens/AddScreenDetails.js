@@ -1,5 +1,5 @@
-import { View, Text , SafeAreaView , StyleSheet , StatusBar , Image , TouchableOpacity , ScrollView  , KeyboardAvoidingView  , Platform} from 'react-native'
-import React , {useContext , useState} from 'react'
+import { View, Text , SafeAreaView , StyleSheet , StatusBar  , TouchableOpacity , ScrollView  , KeyboardAvoidingView   , Keyboard} from 'react-native'
+import React , {useContext , useState , useEffect , useRef} from 'react'
 import TopProfileNavigator from '../components/TopProfileNavigator';
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Slider from '@react-native-community/slider';
@@ -79,31 +79,61 @@ const AddScreenDetails = ({ navigation }) => {
    
   }
 
+  const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  
+  const handleKeyboardDidShow = () => {
+    setKeyboardOpen(true);
+  };
+
+  const handleKeyboardDidHide = () => {
+    setKeyboardOpen(false);
+  };
+
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const scrollViewRef = useRef();
+
   return (
     
-    <SafeAreaView style={styles.container} >
+    <SafeAreaView  >
 
-    <ScrollView>
+<ScrollView
+       
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+      >
 
-    <View>
+    <View style={[ styles.container , isKeyboardOpen ? styles.keyboardOn : '' ]} >
 
 <StatusBar translucent backgroundColor="black" />
-{ /* TOP HEADER TEXT */ }
-<TopProfileNavigator navigation={navigation} text={"إضافة غرض"} />
 
 { /* CHOOSING CATEGORY */ }
 <View style={styles.containerMargin} className="mt-10" >
 
 <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    
     >
 
 
 {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
+
+
             
 <View className="mb-8">
 <Text style={styles.textInput} className="text-lg block text-gray-700 font-bold mb-5" htmlFor="username">

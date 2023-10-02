@@ -1,5 +1,5 @@
 import { View, Text  , StyleSheet , StatusBar  , ScrollView , TouchableOpacity , ActivityIndicator} from 'react-native'
-import React , {useContext , useState , useEffect} from 'react'
+import React , {useContext , useState , useEffect , useRef} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AppContext } from '../context/AppContext';
 import TopStepNavigation from '../components/TopStepNavigation';
@@ -62,11 +62,16 @@ const BookingPaymentScreen = ({ navigation }) => {
     
   }
 
+  const scrollViewRef = useRef();
 
   return (
    
       
-      <ScrollView>
+    <ScrollView
+    style={{ flex: 1 }}
+ref={scrollViewRef}
+contentContainerStyle={{ flexGrow: 1 }} 
+  >
 
    
 
@@ -92,17 +97,23 @@ const BookingPaymentScreen = ({ navigation }) => {
       <View className="mt-12" >
 
       {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
         {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
           <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
         )}
-      
+
       <Text className="text-lg text-black text-left" style={styles.font} > كيف ترد أن تدفع ؟  </Text>
 
       

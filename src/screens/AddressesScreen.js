@@ -1,5 +1,5 @@
 import { View , SafeAreaView , StyleSheet , StatusBar    , ScrollView  , Image , Text , TouchableOpacity , Modal} from 'react-native'
-import React , {useState , useEffect , useContext} from 'react'
+import React , {useState , useEffect , useContext, useCallback} from 'react'
 
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import TopProfileNavigator from '../components/TopProfileNavigator';
@@ -7,6 +7,7 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../context/AppContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const AddressesScreen = ({ navigation }) => {
@@ -17,22 +18,26 @@ const AddressesScreen = ({ navigation }) => {
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [addressId , setAddressId] = useState('');
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const value = await AsyncStorage.getItem('tashark_user');
-        let jsonPrsed = JSON.parse(value);
-        setUser(jsonPrsed);
-        findMyAddresses(jsonPrsed.id);
-        setLoading(false);
-      } catch (error) {
-   
-      }
-    };
 
-    getData();
-  }, [user?.id]);
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          setLoading(true);
+          const value = await AsyncStorage.getItem('tashark_user');
+          let jsonPrsed = JSON.parse(value);
+          setUser(jsonPrsed);
+          findMyAddresses(jsonPrsed.id);
+          setLoading(false);
+        } catch (error) {
+     
+        }
+      };
+  
+      getData();
+    }, [])
+  );
+
 
   const handleDeleteRecord = () => {
   
@@ -52,11 +57,6 @@ const AddressesScreen = ({ navigation }) => {
       <View className={styles.subContainer}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"العناوين"} />
-
-      { /* END TOP HEADER TEXT */ }
-
 
       <View className="flex items-start mt-16 relative" style={styles.topAreaHeadins}>
   {!loading ? (

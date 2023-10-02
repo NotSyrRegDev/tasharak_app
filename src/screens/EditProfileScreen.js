@@ -1,5 +1,5 @@
 import { View, Text , SafeAreaView , StyleSheet , StatusBar , TouchableOpacity  , Image , KeyboardAvoidingView , ScrollView , TextInput , ActivityIndicator , Platform , Keyboard} from 'react-native'
-import React, { useContext , useState , useEffect } from 'react'
+import React, { useContext , useState , useEffect, useCallback } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthenticationContext } from '../context/AuthContext';
@@ -7,6 +7,7 @@ import TopProfileNavigator from '../components/TopProfileNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { AppContext } from '../context/AppContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -32,6 +33,15 @@ const EditProfileScreen = ({ navigation }) => {
   const handleKeyboardDidHide = () => {
     setKeyboardOpen(false);
   };
+
+  
+  const handlePhoneChange = (text) => {
+    const cleanedText = text.replace(/[^0-9]/g, '');
+    if (cleanedText.length <= 10) {
+      setUserPhone(cleanedText);
+    }
+  };
+
 
 
   const {  editUserProfile , isLoading, error , success , setIsLoading } = useContext(AuthenticationContext );
@@ -60,37 +70,42 @@ const EditProfileScreen = ({ navigation }) => {
     }
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('tashark_user');
+         let jsonPrsed = JSON.parse(value);
+         setFirstName(jsonPrsed.first_name);
+         setLastName(jsonPrsed.last_name);
+         setEmail(jsonPrsed.email);
+         setUserPhone(jsonPrsed.phone);
+         setSelectedImageActor(jsonPrsed.thum);
+         setUserId(jsonPrsed.id);
+        
+        } catch (error) {
+       
+        }
+      };
+  
+      getData();
+    }, [])
+  );
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('tashark_user');
-       let jsonPrsed = JSON.parse(value);
-       setFirstName(jsonPrsed.first_name);
-       setLastName(jsonPrsed.last_name);
-       setEmail(jsonPrsed.email);
-       setSelectedImageActor(jsonPrsed.thum);
-       setUserId(jsonPrsed.id);
-      
-      } catch (error) {
-     
-      }
-    };
 
-    getData();
-  }, []);
 
   const [userId, setUserId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userEmail, setEmail] = useState('');
+  const [userPhone, setUserPhone] = useState('');
 
   const editProfile = () => {
    
-    editUserProfile(userId , firstName , lastName , userEmail , userThum );
-   setTimeout(() => {
-    navigation.navigate('MyAccountScreen');
-   }, 3500);
+    editUserProfile(userId , firstName , lastName , userEmail , userPhone ,  userThum , () => {
+      navigation.navigate('MyAccountScreen');
+    } );
+
   }
 
   return (
@@ -102,11 +117,6 @@ const EditProfileScreen = ({ navigation }) => {
       <View style={[styles.container ,  isKeyboardOpen ? styles.keyboardOn : '' ]}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"تعديل الحساب"} />
-
-      { /* END TOP HEADER TEXT */ }
-
 
       { /* NOTIFCATIONS COLUMN */ }
       <View className="flex-col items-center justify-center mt-10 "   >
@@ -180,6 +190,22 @@ const EditProfileScreen = ({ navigation }) => {
         onChangeText={(text) => setLastName(text) }
         />
         </View>
+
+        
+  <View className="mb-8">
+    <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+       رقم الهاتف <Text className="text-red-500 text-base" > * </Text>  
+    </Text>
+    <TextInput
+      style={styles.inputStyle}
+      className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
+      id="phone"
+      placeholder="05xxxxxxx"
+      keyboardType="numeric"
+      value={userPhone}
+      onChangeText={handlePhoneChange}
+    />
+  </View>
 
         <View className="mb-8">
         <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">

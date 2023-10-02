@@ -1,8 +1,8 @@
-import { View, Text  , StyleSheet , Image    , Pressable , TouchableOpacity } from 'react-native'
+import { View, Text  , StyleSheet , Image , TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons';
 import { useState , useEffect , useContext } from 'react';
-import { FONTFAMILY , COLORS } from '../theme/theme';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { FONTFAMILY , COLORS, BORDERRADIUS } from '../theme/theme';
+// import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../context/AppContext';
 import {getDocs  , collection , db } from '../../firebase';
@@ -81,7 +81,7 @@ const Product = ( {id , title  , rating , price_per , category , image , navigat
 
   <View style={styles.containerSlider}  className="mt-5" >
 
-<View className="relative m-3 block overflow-hidden rounded-xl   " >
+<View className="relative m-3 block overflow-hidden rounded-xl   "  style={styles.eventCard} >
       <Image className="h-56 w-full object-cover" source={ { uri: image }}  resizeMode="cover" style={styles.productImage} />
     
         <View className="flex items-start" >
@@ -94,7 +94,7 @@ const Product = ( {id , title  , rating , price_per , category , image , navigat
         <Text style={styles.categoryProductTitle} > {category} </Text>
       </View>
 
-      {favorites.find((favorite) => favorite.product_ids.includes(id)) ? (
+      {/* {favorites.find((favorite) => favorite.product_ids.includes(id)) ? (
         <TouchableOpacity onPress={() => handleAddToFavourite(id)} className="absolute top-5 right-5" style={styles.categoryLoved}>
           <Ionicons name="heart" size={22} color="#FF4033" />
         </TouchableOpacity>
@@ -102,13 +102,11 @@ const Product = ( {id , title  , rating , price_per , category , image , navigat
         <TouchableOpacity onPress={() => handleAddToFavourite(id)} className="absolute top-5 right-5" style={styles.categoryLove}>
           <Ionicons name="heart" size={22} color="#fff" />
         </TouchableOpacity>
-      )}
+      )} */}
      
-      <View >
-
-       
-      </View>
-      <View className="flex-row justify-between mt-3" >
+   
+      <View className="flex-row justify-between mt-3" style={{      paddingHorizontal: 10,
+      paddingVertical: 15}}  >
        
         <View>
           <Text className="text-sm" style={styles.productPrice} >  يوم \ {price_per} ر.س </Text>
@@ -163,7 +161,13 @@ const styles  = StyleSheet.create({
         paddingHorizontal: 5,
         paddingVertical: 5,
         borderRadius: 25,
-      }
+      },
+      eventCard: {
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderColor: '#e9e9e1',
+        borderRadius: BORDERRADIUS.radius_25,
+    },
 } )
 
 export default Product

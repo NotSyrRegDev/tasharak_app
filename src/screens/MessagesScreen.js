@@ -18,12 +18,8 @@ const MyMessagesScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"الرسائل"} />
 
-      { /* END TOP HEADER TEXT */ }
-
-      <View className="flex-col items-center justify-center mt-32 "   >
+      <View className="flex-col items-center justify-center h-96 "   >
       <Image source={require('../assets/icons/messages.png')} />
 
       <Text className="text-center text-2xl " style={styles.font} >  لا توجد  رسائل لعرضها  </Text>

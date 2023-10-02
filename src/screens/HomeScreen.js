@@ -1,5 +1,5 @@
-import { View, Text ,StatusBar , StyleSheet , SafeAreaView , Image ,TouchableOpacity   ,FlatList  ,ScrollView ,Dimensions , RefreshControl , AppState  } from 'react-native'
-import React , {useContext , useState , useEffect} from 'react';
+import { View, Text ,StatusBar , StyleSheet , SafeAreaView , Image ,TouchableOpacity   ,FlatList  ,ScrollView ,Dimensions , RefreshControl   } from 'react-native'
+import React , {useContext , useState , useEffect , useCallback} from 'react';
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import {HomeAdsCategories, HomeAdsOffers, HomeAdsTop} from '../components/HomeAds';
 import Product from '../components/Product';
@@ -8,6 +8,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { AuthenticationContext } from '../context/AuthContext';
 import { AppContext } from '../context/AppContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { collection , getDocs , db } from "../../firebase";
+import SkeletonLoader from "expo-skeleton-loader";
+
 
 const {width} = Dimensions.get('window');
 
@@ -17,10 +21,72 @@ const HomeScreen = ( { navigation } ) => {
   const [categoryOne, setCategoryOne] = useState([]);
   const [categoryTwo, setCategoryTwo] = useState([]);
   const [categoryThree, setCategoryThree] = useState([]);
-  
-  const { isLoading ,  allProducts } = useContext(AppContext);
+  const [allProducts , setAllProducts] = useState([]);
+  const { isLoading , setIsLoading  } = useContext(AppContext);
   const { isAuthenticated } = useContext(AuthenticationContext);
-  
+
+  const PostLayout = () => (
+    <SkeletonLoader
+    highlightColor="#f9f9f9"
+    boneColor="#f9f9f9"
+      style={{
+        marginVertical: 10,
+    
+      }}
+    >
+    
+    <SkeletonLoader.Container
+    
+          style={{ flex: 1, flexDirection: "row" , backgroundColor: '#f9f9f9' }}
+        >
+    
+    <SkeletonLoader.Item
+        style={{ width, height: height / 4.5, marginVertical: 10 , borderRadius: 15 }}
+      />
+    
+     </SkeletonLoader.Container>
+    
+     
+     <SkeletonLoader.Container style={{ flexDirection: 'row' , marginTop: 15 , backgroundColor: '#f9f9f9' , alignItems: 'center',  justifyContent: 'center' }} >
+    
+     <SkeletonLoader.Item
+        style={{ width, height: height / 4.5, marginVertical: 10 , borderRadius: 15   }}
+      />
+    
+      </SkeletonLoader.Container>
+     
+     <SkeletonLoader.Container style={{ flexDirection: 'row' , marginTop: 15 , backgroundColor: '#f9f9f9' , alignItems: 'center',  justifyContent: 'center' }} >
+    
+     <SkeletonLoader.Item
+        style={{ width, height: height / 4.5, marginVertical: 10 , borderRadius: 15   }}
+      />
+    
+      </SkeletonLoader.Container>
+    
+    </SkeletonLoader>
+    );
+
+  const getAllProducts = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'products'));
+      const allProducts = querySnapshot.docs.map((doc) => {
+        const productData = doc.data();
+        productData.id = doc.id;
+        return productData;
+      });
+      setAllProducts(allProducts);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllProducts();
+    }, [])
+  );
+
   useEffect(() => {
     // Filter the products based on category names
     const filteredCategoryOne = allProducts.filter(
@@ -39,21 +105,37 @@ const HomeScreen = ( { navigation } ) => {
 
   }, [allProducts]);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setTimeout(() => {
+      setRefreshing(false);
+      getAllProducts();
+    }, 2000);
+  };
+
 
   return (
+    <ScrollView
+    style={{backgroundColor:COLORS.White }}
+      refreshControl={
+        <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      tintColor="black" 
+    />
+        }
+    >
    <SafeAreaView  >
    
  <ScrollView >
 
  {isLoading ? (
-  <View style={[styles.loadingContainer, {justifyContent: 'center', alignItems: 'center'}]}>
- 
-    <View style={styles.textContainer}>
-      <Image source={require('../assets/icons/logo-green.png')} style={styles.logo} />
-    
+  <View style={styles.marginContainer} >
+        <View style={styles.container}>
+     <PostLayout />
     </View>
-   
-  </View>
+        </View>
  ) : (
 
   <View style={styles.container} >
@@ -241,6 +323,8 @@ const HomeScreen = ( { navigation } ) => {
 </ScrollView>
 
    </SafeAreaView>
+
+   </ScrollView>
   )
 }
 
@@ -314,11 +398,20 @@ logo: {
   maxWidth: 350,
 },
 loadingContainer: { 
-  backgroundColor: COLORS.Blue,
   flex: 1,
+  height: '100%',
+  direction: 'rtl',
+  paddingHorizontal: 16,
+  paddingBottom: 20,
 },
 textContainer: {
   alignItems: 'center',
+},
+font: {
+  fontFamily: FONTFAMILY.font_regular
+},
+marginContainer: {
+  paddingHorizontal: 15,
 },
 
 });

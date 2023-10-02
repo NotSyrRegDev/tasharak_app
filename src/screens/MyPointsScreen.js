@@ -13,17 +13,11 @@ const MyPointsScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container} >
       
       <ScrollView>
-
-
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"نقاطي"} />
 
-      { /* END TOP HEADER TEXT */ }
-
-      <View className="flex-col items-center justify-center mt-32 "   >
+      <View className="flex-col items-center justify-center h-96 "   >
       <Image source={require('../assets/icons/clock_icon.png')} />
 
       <Text className="text-center text-2xl " style={styles.font} >  هذه الميزة سوف تتوفر قريبا.   </Text>

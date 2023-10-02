@@ -14,14 +14,12 @@ export const accountAuthOptions = [
         title: 'البلد و المدينة',
         nav: 'CountriesScreen',
     },
-
-    {
-        id: 3,
-        icon: require('../assets/icons/account_icons/2.png'),
-        title: 'المفضلة',
-        nav: 'MyFavouritesScreen',
-    },
-
+    // {
+    //     id: 3,
+    //     icon: require('../assets/icons/account_icons/2.png'),
+    //     title: 'المفضلة',
+    //     nav: 'MyFavouritesScreen',
+    // },
     {
         id: 4,
         icon: require('../assets/icons/account_icons/3.png'),

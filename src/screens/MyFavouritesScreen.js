@@ -61,8 +61,7 @@ const MyFavouritesScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"المفضلة"} />
+  
 
       { /* END TOP HEADER TEXT */ }
 

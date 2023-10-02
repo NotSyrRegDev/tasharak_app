@@ -16,7 +16,7 @@ const SliderComponent = ({ navigation ,  data , pointsShow , adsIndex }) => {
   
       return (
         <TouchableOpacity
-        key={index}
+       key={item.id.toString()} // Use item.id
           activeOpacity={0.8}
           onPress={() => {
             navigateToSlide(index);
@@ -99,21 +99,21 @@ const SliderComponent = ({ navigation ,  data , pointsShow , adsIndex }) => {
   
     return (
       <View style={styles.containerSlider} className="mt-5 flex-col items-center justify-center">
-        <FlatList
-          ref={flatListRef}
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          scrollEventThrottle={32}
-          onMomentumScrollEnd={(event) => {
-            const newIndex = Math.round(event.nativeEvent.contentOffset.x / windowWidth);
-            setActiveSlide(newIndex);
-          }}
-        />
+       <FlatList
+        ref={flatListRef}
+        data={data}
+        keyExtractor={(item) => item.id.toString()} // Use item.id
+        renderItem={renderItem}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        scrollEventThrottle={32}
+        onMomentumScrollEnd={(event) => {
+          const newIndex = Math.round(event.nativeEvent.contentOffset.x / windowWidth);
+          setActiveSlide(newIndex);
+        }}
+      />
 
         {pointsShow && (
           <View className="flex-row items-center justify-center mt-5" style={styles.slidePointsContainer} >

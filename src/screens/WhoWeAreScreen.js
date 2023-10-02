@@ -24,8 +24,6 @@ const WhoWeAreScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"من نحن"} />
 
       { /* END TOP HEADER TEXT */ }
       <View className="mt-8" style={styles.topAreaHeadins}  >
@@ -33,12 +31,12 @@ const WhoWeAreScreen = ({ navigation }) => {
         <View className="mt-2 items-start flex" >
         <Text className="text-lg text-left" style={styles.headlineBlue} > من هو تشارك؟ </Text>
         <Text className="text-sm text-left mt-2" style={styles.font} > 
-        هذا النص هو مثال لنص يمكن أن يستبدل في 
-نفس المساحة، لقد تم توليد هذا النص من 
-مولد النص العربى، حيث يمكنك أن تولد مثل 
-هذا النص أو العديد من النصوص  الأخرى
- إضافة إلى زيادة عدد الحروف التى يولدها 
-التطبيق إذا كنت تحتاج إلى عدد أكبر.
+              هذا النص هو مثال لنص يمكن أن يستبدل في 
+      نفس المساحة، لقد تم توليد هذا النص من 
+      مولد النص العربى، حيث يمكنك أن تولد مثل 
+      هذا النص أو العديد من النصوص  الأخرى
+      إضافة إلى زيادة عدد الحروف التى يولدها 
+      التطبيق إذا كنت تحتاج إلى عدد أكبر.
    </Text>
         </View>
 

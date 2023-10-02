@@ -1,9 +1,10 @@
 import { View , SafeAreaView , StyleSheet , StatusBar    , ScrollView  , Image , Text} from 'react-native'
-import React , {useState , useEffect } from 'react'
+import React , {useState , useEffect, useCallback } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import TopProfileNavigator from '../components/TopProfileNavigator';
 import { getDoc , doc , db   } from '../../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const MyRevenueScreen = ({ navigation }) => {
@@ -11,21 +12,26 @@ const MyRevenueScreen = ({ navigation }) => {
   const [loading , setLoading] = useState(false);
   const [revenueObject , setRevenueObject] = useState({});
 
-  useEffect(() => {
-    const getInfoFromFireStore = async () => {
-      setLoading(true);
-      const value = await AsyncStorage.getItem('tashark_user');
-      let jsonPrsed = JSON.parse(value);
-   
-      const docRef = doc(db, "users", jsonPrsed.id );
-      const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setRevenueObject(docSnap.data());
-          setLoading(false);
-        } 
-    }
-    getInfoFromFireStore();
-  } , []);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      const getInfoFromFireStore = async () => {
+        setLoading(true);
+        const value = await AsyncStorage.getItem('tashark_user');
+        let jsonPrsed = JSON.parse(value);
+     
+        const docRef = doc(db, "users", jsonPrsed.id );
+        const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setRevenueObject(docSnap.data());
+            setLoading(false);
+          } 
+      }
+      getInfoFromFireStore();
+    }, [])
+  );
+
 
 
   return (
@@ -37,14 +43,9 @@ const MyRevenueScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"إيراداتي"} />
-
-      { /* END TOP HEADER TEXT */ }
-
       { /*  BUTTONS CONTAINER */ }
 
-        <View className="mt-16  min-w-100" style={styles.buttonsContainer} >
+        <View className="mt-20  min-w-100" style={styles.buttonsContainer} >
 
         <View className="text-center relative bg-blue-100 w-80 h-16 flex justify-center " >
             <Text className="font-bold text-xl text-center pl-10" style={styles.priceButton} >  {revenueObject?.my_revenue} ر.س </Text>

@@ -16,8 +16,7 @@ const CountrySubScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"المدينة"} />
+
 
       { /* END TOP HEADER TEXT */ }
 

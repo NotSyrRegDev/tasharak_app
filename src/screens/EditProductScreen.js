@@ -2,7 +2,6 @@ import { View, Text , SafeAreaView , StyleSheet , StatusBar , TouchableOpacity  
 import React, { useContext , useState , useEffect , useRef } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { AuthenticationContext } from '../context/AuthContext';
 import TopProfileNavigator from '../components/TopProfileNavigator'; 
 import Slider from '@react-native-community/slider';
 import DaysInput from '../components/DaysInput';
@@ -41,6 +40,11 @@ const EditProductScreen = ({ navigation , route }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [fullScreen , setFullScreen] = useState(false);
 
+  const [cityLocation  ,setCityLocation] = useState('');
+  const [districyLocation  ,setDistricyLocation] = useState('');
+  const [streetLocation  ,setStreetLocation] = useState('');
+  const [productAvaliable  ,setProductAvaliable] = useState(true);
+
   const [draggableMarkerCoord, setDraggableMarkerCoord] = useState({
     longitude: 46.68725,
     latitude: 24.68204
@@ -48,9 +52,9 @@ const EditProductScreen = ({ navigation , route }) => {
 
   const [objectLocation , setObjectLocation] = useState({
     latitude: 24.68204,
-    latitudeDelta: 27.499085419977938,
+    latitudeDelta: 0.0922,
     longitude: 46.68725,
-    longitudeDelta: 15.952148000000022,
+    longitudeDelta: 0.0421,
   });
 
 
@@ -77,6 +81,10 @@ const EditProductScreen = ({ navigation , route }) => {
 
   const toggleSwitch = () => {
     setInsuranceStatus(!insuranceStatus);
+  };
+
+  const toggleSwitchAvaliable = () => {
+    setProductAvaliable(!productAvaliable);
   };
 
   const handleFullScreenMap = () => {
@@ -119,7 +127,7 @@ const EditProductScreen = ({ navigation , route }) => {
 
   const handleEditProduct = () => {
 
-    editProduct(productName , productDesc , categoryName , tagsProductArray , productCase , productCount , dailyRentPrice , weekRentPrice , monthlyRentPrice , minRentalPrice , maxRentalPrice , deliveryWay , insurancePrice , insuranceStatus , deliveryPlan , selectedImages , draggableMarkerCoord , route.params.productId );
+    editProduct(productName , productDesc , categoryName , tagsProductArray , productCase , productCount , dailyRentPrice , weekRentPrice , monthlyRentPrice , minRentalPrice , maxRentalPrice , deliveryWay , insurancePrice , insuranceStatus , deliveryPlan , selectedImages , draggableMarkerCoord , route.params.productId , productAvaliable , cityLocation , districyLocation , streetLocation );
 
     setTimeout(() => {
       navigation.navigate('MyAccountScreen');
@@ -150,6 +158,7 @@ const EditProductScreen = ({ navigation , route }) => {
           setProductName(docSnap.data().product_name);
           setProductDesc(docSnap.data().product_desc);
           setCateogryName(docSnap.data().product_category);
+          setProductAvaliable(docSnap.data().is_available);
           setTagsProductArray(docSnap.data().product_tags);
           setProductCase(docSnap.data().productAdditional[0].productCase);
           setProductCount(docSnap.data().productAdditional[0].productCount);
@@ -165,25 +174,45 @@ const EditProductScreen = ({ navigation , route }) => {
           setSelectedImages(docSnap.data().product_images);
           setDraggableMarkerCoord(docSnap.data().product_location);
           setObjectLocation(docSnap.data().product_location);
+          setCityLocation(docSnap.data().location_details.cityLocation);
+          setDistricyLocation(docSnap.data().location_details.districyLocation);
+          setStreetLocation(docSnap.data().location_details.streetLocation);
+
           setLoading(false);
         } 
     }
     getInfoFromFireStore();
   } , []);
 
+  const handleAddCountProduct = () => {
+
+    if (bookingProduct?.productCount < productCount) {
+      setProductCount(productCount + 1);
+    }
+  }
+  const handleMinusCountProduct = () => {
+
+    if (productCount > 1) { // Check if productCount is greater than 1 before decrementing
+      setProductCount(productCount - 1);
+    }
+  }
+
+  const scrollViewRef = useRef();
+
   return (
     <SafeAreaView>
       
-      <ScrollView>
+      <ScrollView
+      
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+      >
 
 
       <View style={[styles.container ,  isKeyboardOpen ? styles.keyboardOn : '' ]}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"تعديل المنتج"} />
-
-      { /* END TOP HEADER TEXT */ }
+ 
 
       {loading ? (
         <View className="mt-8 mb-8" >
@@ -194,22 +223,30 @@ const EditProductScreen = ({ navigation , route }) => {
 
 <View className="mt-12" >
 
-{error && (
-    <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-      <Text style={styles.errorText}  >{error}</Text>
-    </View>
-  )}
 
-  {success && (
-    <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
-      <Text style={styles.errorText}  >{success}</Text>
-    </View>
-  )}
+    {error && (
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </>
+      )}
+
+        {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
+            <Text style={styles.errorText}  >{success}</Text>
+          </View>
+          </>
+        )}
+        
 
   {!fullScreen ? (
 
     <KeyboardAvoidingView
-behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+
 >
 
 {error && (
@@ -217,6 +254,23 @@ behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       <Text style={styles.errorText}  >{error}</Text>
     </View>
   )}
+
+  <View className="mb-8 flex flex-row items-center justify-between mx-2">
+<View className="w-2/3 mx-2" >
+<Text style={styles.textInput} className="text-lg  block text-gray-700 font-bold mb-2" htmlFor="username">
+    الغرض متاح للايجار
+  </Text>
+</View>
+
+
+  <View className="w-1/3 mx-2" >
+  <TouchableOpacity onPress={toggleSwitchAvaliable} style={[styles.switch , productAvaliable ? styles.switchBgOn : styles.switchBgOff  ]}>
+        <View style={[styles.switchToggle, productAvaliable ? styles.switchToggleOn : styles.switchToggleOff]} />
+      </TouchableOpacity>
+
+      </View>
+   
+</View>
 
 <View className="mb-8">
 
@@ -350,7 +404,11 @@ onPress={() => handleAddTags() }
 <Text style={styles.countTitle} className="text-xl" >  {productCount} </Text>
 
 { /*  DECREMENT */ }
-<TouchableOpacity onPress={() => setProductCount(productCount - 1) } >
+<TouchableOpacity onPress={() => {
+  if (productCount > 1) {
+    setProductCount(productCount - 1)
+  }
+} } >
 <View style={[styles.circleButton , styles.minusButton]} >
 <MaterialCommunityIcons name="minus" size={22} color="#fff" clas style={{ fontWeight: 'bold'  }}  />
 </View>
@@ -485,7 +543,7 @@ onPress={() => handleAddTags() }
 
 
   
-<View className="mb-8">
+<View className="mb-8 mt-8">
 
 <Text style={styles.textInput} className="block text-lg text-gray-700 font-bold mb-1" htmlFor="username">
 إضافة صورة للغرض  <Text className="text-red-500 text-base" > * </Text>  
@@ -529,23 +587,58 @@ style={[styles.button , styles.opacity]}
 
 
 
-
-<TouchableOpacity
-className="mt-5 mb-8 text-center rounded-full pt-4 h-14 items-center flex w-full"
-style={[styles.button , styles.opacity]}
-onPress={() => navigation.navigate('LoginScreen')}>
-<View className="flex-row items-center" >
-<Ionicons name="camera-outline" size={22} color="#fff" style={styles.checkmark} />
-<Text style={styles.buttonText}>  التقاط صورة </Text>
-</View>
-
-</TouchableOpacity>
-
 </View>
 
 </View>
 
-{/* <View className="mb-8">
+
+  <View className="mb-8">
+
+  <Text style={styles.textInput} className="block text-gray-700 font-bold mb-3" htmlFor="username">
+     المدينة <Text className="text-red-500 text-base" > * </Text>  
+    </Text>
+  <TextInput
+  style={styles.inputStyle}
+  className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
+  id="title"
+  placeholder="أكتب اسم المدينة المتوافر فيها الغرض"
+      value={cityLocation}
+      onChangeText={(text) => setCityLocation(text) }
+  />
+  </View>
+
+<View className="mb-8">
+
+<Text style={styles.textInput} className="block text-gray-700 font-bold mb-3" htmlFor="username">
+     الحي <Text className="text-red-500 text-base" > * </Text>  
+    </Text>
+  <TextInput
+  style={styles.inputStyle}
+  className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
+  id="title"
+  placeholder="أكتب اسم الحي المتوافر فيها الغرض"
+      value={districyLocation}
+      onChangeText={(text) => setDistricyLocation(text) }
+  />
+  </View>
+
+<View className="mb-8">
+
+<Text style={styles.textInput} className="block text-gray-700 font-bold mb-3" htmlFor="username">
+     الشارع 
+    </Text>
+  <TextInput
+  style={styles.inputStyle}
+  className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
+  id="title"
+  placeholder="أكتب اسم الشارع المتوافر فيها الغرض"
+      value={streetLocation} 
+      onChangeText={(text) => setStreetLocation(text) }
+  />
+  </View>
+
+
+<View className="mb-8">
 
 <Text style={styles.textInput} className="block text-lg text-gray-700 font-bold mb-5" htmlFor="username">
      عنوان الغرض  <Text className="text-red-500 text-base" > * </Text>  
@@ -557,31 +650,42 @@ onPress={() => navigation.navigate('LoginScreen')}>
 <Text className="text-sm mb-2 text-center " syle={styles.errorText} >  فضلا قم بتحديد وسحب العلامة الخضراء على الخريطة لتوضيح مكان تواجد الغرض  </Text>
   </View>
 
-<MapView
-className="realtive"
-onPress={handleFullScreenMap}
-provider={PROVIDER_GOOGLE}
-ref={mapRef} 
-style={styles.map}
-initialRegion={objectLocation}
->
-<Marker
-draggable
-pinColor="#22BC9F"
-coordinate={draggableMarkerCoord}
-onDragEnd={(e) => setDraggableMarkerCoord(e.nativeEvent.coordinate)}
-tooltip={true}
->
-<Callout>
-  <Text style={styles.font}>هذه المكان الذي سيظهر للمستخدمين</Text>
-</Callout>
-</Marker>
+  <View className="flex h-96 bg-white" >
+
+      <MapView
+    className="realtive"
+    onPress={handleFullScreenMap}
+    provider={PROVIDER_GOOGLE}
+    ref={mapRef} 
+    style={styles.map}
+    initialRegion={{
+      latitude: objectLocation.latitude,
+    latitudeDelta: 0.0922,
+    longitude: objectLocation.longitude,
+    longitudeDelta: 0.0421,
+    }}
+    >
+    <Marker
+    draggable
+    pinColor="#22BC9F"
+    coordinate={draggableMarkerCoord}
+    onDragEnd={(e) => setDraggableMarkerCoord(e.nativeEvent.coordinate)}
+    tooltip={true}
+    >
+    <Callout>
+      <Text style={styles.font}>هذه المكان الذي سيظهر للمستخدمين</Text>
+    </Callout>
+    </Marker>
 
 
-</MapView>
+    </MapView>
+
+  </View>
+
+
 </View>
  
-</View> */}
+</View>
 
 <TouchableOpacity
   className="mt-8  rounded-full p-3"
@@ -597,13 +701,20 @@ tooltip={true}
 </KeyboardAvoidingView>
 
   ) : (
+
+    <View className="h-96 bg-white" >
+
     <MapView
-   
-   className="realtive"
+
          provider={PROVIDER_GOOGLE}
          ref={mapRef} 
          style={styles.fullMap}
-         initialRegion={objectLocation}
+         initialRegion={{
+      latitude: objectLocation.latitude,
+    latitudeDelta: 0.0922,
+    longitude: objectLocation.longitude,
+    longitudeDelta: 0.0421,
+    }}
        >
  
      <Marker
@@ -624,6 +735,8 @@ tooltip={true}
        </TouchableOpacity>
         
        </MapView>
+
+       </View>
   )}
 
 
@@ -631,8 +744,6 @@ tooltip={true}
 
 </View>
       )}
-
-
 
 
       { /* END NOTIFCATIONS COLUMN */ }
@@ -848,7 +959,7 @@ const styles = StyleSheet.create({
   map: {
     marginTop: 30,
     width:'100%',
-    height: '75%'
+    height: '85%'
   },
   fullMap: {
     width:'100%',

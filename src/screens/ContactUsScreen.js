@@ -1,5 +1,5 @@
 import { View, Text , SafeAreaView , StyleSheet , StatusBar , TouchableOpacity  , Modal , KeyboardAvoidingView , ScrollView , TextInput , ActivityIndicator , Platform , Keyboard , Image , TouchableWithoutFeedback } from 'react-native'
-import React, { useContext , useState , useEffect } from 'react'
+import React, { useContext , useState , useEffect , useRef } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import TopProfileNavigator from '../components/TopProfileNavigator';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
@@ -50,18 +50,21 @@ const ContactUsSCreen = ({ navigation }) => {
        }, 3500);
     }
 
+    const scrollViewRef = useRef();
 
   return (
     <SafeAreaView>
       
-      <ScrollView>
+      <ScrollView
+    style={{ flex: 1 }}
+ref={scrollViewRef}
+contentContainerStyle={{ flexGrow: 1 }} 
+  >
 
 
       <View style={[styles.container ,  isKeyboardOpen ? styles.keyboardOn : '' ]}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"تواصل معنا"} />
 
       { /* END TOP HEADER TEXT */ }
 
@@ -70,15 +73,21 @@ const ContactUsSCreen = ({ navigation }) => {
       <View className="mt-12" >
 
       {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
         {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
           <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
         )}
 
         <KeyboardAvoidingView

@@ -1,5 +1,5 @@
 import { View , SafeAreaView , StyleSheet , StatusBar    , ScrollView , Text , Image , Modal ,TouchableOpacity , ActivityIndicator } from 'react-native'
-import React , {useState , useEffect ,useContext } from 'react'
+import React , {useState , useEffect ,useContext, useCallback } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import TopProfileNavigator from '../components/TopProfileNavigator';
 import SearchBar from '../components/SearchBar';
@@ -7,6 +7,7 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../context/AppContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -19,23 +20,25 @@ const OrderSummaryScreen = ({ navigation }) => {
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const {  findMyProducts , myFoundedProducts , deleteRecord } = useContext(AppContext);
 
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          setLoading(true);
+          const value = await AsyncStorage.getItem('tashark_user');
+          let jsonPrsed = JSON.parse(value);
+          setUser(jsonPrsed);
+          findMyProducts(jsonPrsed.id);
+          setLoading(false);
+        } catch (error) {
+    
+        }
+      };
   
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const value = await AsyncStorage.getItem('tashark_user');
-        let jsonPrsed = JSON.parse(value);
-        setUser(jsonPrsed);
-        findMyProducts(jsonPrsed.id);
-        setLoading(false);
-      } catch (error) {
-  
-      }
-    };
+      getData();
+    }, [user?.id])
+  );
 
-    getData();
-  }, [user?.id]);
 
 
   const handleEdit = () => {
@@ -62,14 +65,9 @@ const OrderSummaryScreen = ({ navigation }) => {
       <ScrollView>
 
 
-      <View   >
+      <View style={{ paddingBottom: 130 }}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"أغراضي"} />
-
-      { /* END TOP HEADER TEXT */ }
-
 
       { /* FAVOURITEs COLUMN */ }
 
@@ -137,11 +135,7 @@ const OrderSummaryScreen = ({ navigation }) => {
 
       
       ) : (
-        <View className="mt-8 mb-8">
-    <ActivityIndicator animating={true} color={'#007FB7'} />
-  </View>
-      )  : (
-    <View>
+        <View>
       <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start w-full">
       <Text style={styles.errorText}>عفوا لم نستطع العثور على أي منتج</Text>
       </View>
@@ -155,6 +149,12 @@ const OrderSummaryScreen = ({ navigation }) => {
       </View>
 
       </View>
+      )  : (
+
+
+      <View className="mt-8 mb-8">
+    <ActivityIndicator animating={true} color={'#007FB7'} />
+  </View>
       )}
 
      

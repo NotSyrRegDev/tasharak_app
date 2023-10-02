@@ -10,23 +10,12 @@ const NotificationsScreen = ({ navigation }) => {
   return (
     <View>
       
-  
-
       <View style={styles.container}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-      <View className="pt-16" >
-      <TopProfileNavigator navigation={navigation} text={"الاشعارات"} />
-
-      </View>
-
-     
-      { /* END TOP HEADER TEXT */ }
-
 
       { /* NOTIFCATIONS COLUMN */ }
-      <View className="flex-col items-center justify-center px-8 mt-32"   >
+      <View className="flex-col items-center justify-center px-8 h-96"   >
       <Image source={require('../assets/icons/Notifications.png')} />
 
       <Text className="text-center text-2xl " style={styles.font}  >  لا توجد اشعارات حاليا </Text>

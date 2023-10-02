@@ -1,5 +1,5 @@
 import { View, Text  , StyleSheet , StatusBar  , ScrollView , TouchableOpacity , Image , ActivityIndicator} from 'react-native'
-import React , {useContext , useState , useEffect } from 'react'
+import React , {useContext , useState , useEffect , useRef } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AppContext } from '../context/AppContext';
 import LoadingContainer from '../components/LoadingContainer';
@@ -14,6 +14,8 @@ import { getDoc , doc , db   } from '../../firebase';
 
 
 const RentedProductScreen = ({ navigation  , route }) => {
+
+  const scrollViewRef = useRef();
 
   const [loading , setLoading] = useState(false)
   const { isLoading , error , setError   } = useContext(AppContext);
@@ -91,7 +93,11 @@ const RentedProductScreen = ({ navigation  , route }) => {
   return (
    
       
-      <ScrollView>
+    <ScrollView
+    style={{ flex: 1 }}
+ref={scrollViewRef}
+contentContainerStyle={styles.container} 
+  >
 
       {isLoading && (
        <LoadingContainer />
@@ -120,11 +126,14 @@ const RentedProductScreen = ({ navigation  , route }) => {
       ) : (
         <View className="mt-12" >
 
-{error && (
-    <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-      <Text style={styles.errorText}  >{error}</Text>
-    </View>
-  )}
+        {error && (
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </>
+      )}
 
   
 

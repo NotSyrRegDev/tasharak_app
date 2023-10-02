@@ -1,5 +1,5 @@
 import { View, Text  , StyleSheet , StatusBar , TouchableOpacity  , Image , ActivityIndicator , Modal } from 'react-native'
-import React , {useState , useContext , useEffect} from 'react'
+import React , {useState , useContext , useEffect, useCallback} from 'react'
 import { ScrollView } from 'react-native';
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AuthenticationContext } from '../context/AuthContext';
@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const MyOrdersScreen = ({ navigation }) => {
@@ -19,33 +20,38 @@ const MyOrdersScreen = ({ navigation }) => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [orderId , setOrderId] = useState('');
-  const {  findMyProducts  , myTenantProducts   ,  findMyBookings , deleteRecord   , myRentedProducts } = useContext(AppContext);
+  const {  findMyProducts  , myTenantProducts    , deleteRecord   , myRentedProducts } = useContext(AppContext);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const value = await AsyncStorage.getItem('tashark_user');
-        let jsonPrsed = JSON.parse(value);
-        setUser(jsonPrsed);
-        findMyRented(jsonPrsed.id);
-        findMyProducts(jsonPrsed.id);
-      
-        setLoading(false);
-      } catch (error) {
-      
-      }
-    };
 
-    getData();
-  }, [user?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          setLoading(true);
+          const value = await AsyncStorage.getItem('tashark_user');
+          let jsonPrsed = JSON.parse(value);
+          setUser(jsonPrsed);
+          findMyRented(jsonPrsed.id);
+          findMyProducts(jsonPrsed.id);
+        
+          setLoading(false);
+        } catch (error) {
+        
+        }
+      };
+  
+      getData();
+    }, [user?.id])
+  );
+
 
 
   const handleEdit = () => {
     setModalEditVisible(!modalEditVisible);
     setTimeout(() => {
       navigation.navigate('EditProductScreen' , {
-        productId: '1'
+        productId: orderId
       })
     } , 200)
   }
@@ -61,20 +67,16 @@ const MyOrdersScreen = ({ navigation }) => {
 
 
   return (
-   
-
     <ScrollView>
 
-    <View style={styles.container}  >
+    <View  style={styles.container} >
 
 <StatusBar translucent backgroundColor="black" />
 { /* TOP HEADER TEXT */ }
-<View className="flex items-center pt-16 pb-5" style={styles.topAreaHeadins}  >
+<View className="flex items-center pt-10 pb-3" style={styles.topAreaHeadins}  >
 
-<Text className="text-3xl text-center text-white mt-8"  style={styles.title} > إيجاراتي  </Text>
+<Text className="text-3xl text-center text-white mt-8" style={styles.title} > إيجاراتي  </Text>
 
-
-{ /* END TOP HEADER TEXT */ }
 <View className="flex items-center mb-5" style={styles.topAreaHeadins}  >
 
 <View
@@ -100,7 +102,9 @@ const MyOrdersScreen = ({ navigation }) => {
 
 </View>
 
-{activeState === "rented" && (
+    <View className="bg-white rounded-xl -translate-y-5" >
+
+    {activeState === "rented" && (
    !loading ? myRentedProducts && myRentedProducts.length !== 0 ? (
         
     myRentedProducts.map(({id , booking }) => (
@@ -219,11 +223,12 @@ const MyOrdersScreen = ({ navigation }) => {
           
       )
 )}
+    </View>
 
      
 
 
-{ /* END ORDERS COLUMN */ }
+
 
 </View>
 
@@ -308,6 +313,7 @@ const styles = StyleSheet.create({
     direction: 'rtl',
     felx:1,
     borderRadius: 50,
+    paddingBottom: 30,
     
   },
   topAreaHeadins: {
@@ -318,6 +324,7 @@ const styles = StyleSheet.create({
     color: COLORS.White,
     fontFamily: FONTFAMILY.font_bold,
     fontWeight: 'bold',
+    lineHeight: 60,
     
   },
   searchBarContainer: {

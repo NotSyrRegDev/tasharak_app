@@ -1,5 +1,5 @@
 import { View, Text , SafeAreaView , StyleSheet , StatusBar , Image , TouchableOpacity , ScrollView  ,ActivityIndicator  } from 'react-native'
-import React , {useContext , useState} from 'react'
+import React , {useContext , useState , useRef} from 'react'
 import TopProfileNavigator from '../components/TopProfileNavigator';
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -8,6 +8,7 @@ import { AppContext } from '../context/AppContext';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 
 const AddScreenImages = ({ navigation }) => {
+  const scrollViewRef = useRef();
 
   const [productImage , setProductImage] = useState('');
 
@@ -31,7 +32,6 @@ const AddScreenImages = ({ navigation }) => {
       setError("يرجى اعطاء الاذن بالوصول للمعرض");
       return;
     }
-
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
@@ -77,7 +77,12 @@ const AddScreenImages = ({ navigation }) => {
     
     <SafeAreaView style={styles.container} >
 
-    <ScrollView>
+    
+<ScrollView
+     
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+      >
 
     <View>
 
@@ -88,17 +93,23 @@ const AddScreenImages = ({ navigation }) => {
 
 { /* CHOOSING CATEGORY */ }
 <View style={styles.containerMargin} className="mt-10" >
-
 {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
         {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
           <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
+        
         )}
 
 <View className="mb-8">
@@ -139,20 +150,6 @@ const AddScreenImages = ({ navigation }) => {
           <View className="flex-row items-center" >
           <Ionicons name="image-outline" size={22} color="#fff" style={styles.checkmark} />
           <Text style={styles.buttonText}>  إضافة صورة </Text>
-          </View>
-        
-        </TouchableOpacity>
-
-       
-
-
-        <TouchableOpacity
-        className="mt-5 text-center rounded-full pt-4 h-14 items-center flex "
-          style={[styles.button , styles.opacity]}
-          onPress={() => navigation.navigate('LoginScreen')}>
-          <View className="flex-row items-center" >
-          <Ionicons name="camera-outline" size={22} color="#fff" style={styles.checkmark} />
-          <Text style={styles.buttonText}>  التقاط صورة </Text>
           </View>
         
         </TouchableOpacity>

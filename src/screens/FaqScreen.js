@@ -25,8 +25,6 @@ const FaqScreen = ({ navigation }) => {
       <View   >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"الاسئلة الشائعة"} />
 
       { /* END TOP HEADER TEXT */ }
       <View className="flex items-center" style={styles.topAreaHeadins}  >

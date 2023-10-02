@@ -1,28 +1,33 @@
 import { View, Text , SafeAreaView , StyleSheet , StatusBar   , Image , TouchableOpacity , ScrollView} from 'react-native'
-import React , {useContext , useEffect , useState} from 'react'
+import React , {useCallback, useContext , useEffect , useState} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AuthenticationContext } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from '@expo/vector-icons/Feather';
 import { accountAuthOptions } from '../common/Account';
+import { useFocusEffect } from '@react-navigation/native';
 
 const MyAccountScreen = ({ navigation }) => {
 
   const { onLogout  } = useContext(AuthenticationContext);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('tashark_user');
-        setUser(JSON.parse(value));
-      } catch (error) {
-  
-      }
-    };
 
-    getData();
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('tashark_user');
+          setUser(JSON.parse(value));
+        } catch (error) {
+    
+        }
+      };
+  
+      getData();
+    }, [])
+  );
 
   return (
  
@@ -48,7 +53,7 @@ const MyAccountScreen = ({ navigation }) => {
 
           <View className="flex items-start px-6 mt-2" >
             <Text className="text-white text-base " style={styles.font} > {user?.first_name} {user?.last_name} </Text>
-            <Text className="text-white text-base mt-1" style={styles.font} > {user?.email} </Text>
+            <Text className="text-white text-base mt-1" style={styles.font} > {user?.phone} </Text>
           </View>
 
           </View>
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     color: COLORS.White,
     fontFamily: FONTFAMILY.font_bold,
     fontWeight: 'bold',
-    
+    lineHeight: 60,
   },
   searchBarContainer: {
     flexDirection: 'row',

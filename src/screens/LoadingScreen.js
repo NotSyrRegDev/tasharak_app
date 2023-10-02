@@ -5,18 +5,10 @@ import { AuthenticationContext } from '../context/AuthContext';
 
 
 const LoadingScreen = ({ navigation }) => {
-
-  const { isAuthenticated } = useContext(AuthenticationContext);
-
   useEffect(() => {
 
     setTimeout(() => {
-       if (isAuthenticated) {
-        navigation.navigate('HomeTabs');
-       }
-       if (!isAuthenticated) {
-         navigation.navigate('WelcomeScreen');
-       }
+      navigation.navigate('WelcomeScreen');
       
      
     }, 2000);

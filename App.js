@@ -27,9 +27,10 @@ function App() {
      <AuthContextProvider>
         <AppContextProvider  >
 
-       
-      <Navigation />
+        <Navigation />
+      
       <ExpoStatusBar style="auto" />
+      
       </AppContextProvider>
       </AuthContextProvider>
   );

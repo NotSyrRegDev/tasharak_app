@@ -25,16 +25,11 @@ const SearchScreen = ({ navigation , route }) => {
     <SafeAreaView style={styles.container} >
       
       <ScrollView>
-
-
       <View   >
-
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"البحث"} />
 
       { /* END TOP HEADER TEXT */ }
-      <View className="mt-2" >
+      <View className="mt-5" >
       <SearchBar navigation={navigation} placeholder={"عن ماذا تبحث"} icon={"search"} />
     </View>
 

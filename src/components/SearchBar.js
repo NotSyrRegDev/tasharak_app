@@ -29,7 +29,7 @@ const SearchBar = ( { navigation , placeholder , icon } ) => {
         onSubmitEditing={handleSearchSubmit}
       />
       <TouchableOpacity onPress={handleSearchSubmit} >
-      <Ionicons name={icon} size={28} color="#DADADA" />
+      <Ionicons name={icon} size={22} color="#DADADA" />
       </TouchableOpacity>
         
     </View>
@@ -41,10 +41,11 @@ const styles = StyleSheet.create({
     searchBarContainer: {
         flexDirection: 'row',
         backgroundColor: '#FFF',
-        padding: 16,
+        padding: 8,
         borderRadius: 50,
         alignItems: 'center',
         paddingHorizontal: 30,
+        fontSize: 12,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.07,

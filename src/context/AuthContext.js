@@ -32,6 +32,13 @@ export const AuthContextProvider = ({ children }) => {
     }
   });
 
+  const resetStates = () => {
+    setTimeout(() => {
+      setError('');
+      setSuccess('');
+      setIsLoading(false);
+    } , 1850)
+  }
 
 
   const onLogin = (email, password) => {
@@ -70,25 +77,24 @@ export const AuthContextProvider = ({ children }) => {
           first_name: usersDataArray[0].first_name ,
           last_name: usersDataArray[0].last_name,
           email: usersDataArray[0].email,
+          phone: usersDataArray[0].phone,
           account_type : usersDataArray[0].account_type,
         }
         await AsyncStorage.setItem('tashark_user', JSON.stringify(userObject));
 
         const user = userCredential.user;
         setUser(user);
-        setIsLoading(false);
+        resetStates();
       }
       else {
-        setError("لم نعثر على المستخدم")
+        setError("لم نعثر على المستخدم");
+        resetStates();
       }
-          
-      
-
-        
       })
       .catch((e) => {
         setIsLoading(false);
         setError(e.toString());
+        resetStates();
       });
   };
 
@@ -166,10 +172,6 @@ export const AuthContextProvider = ({ children }) => {
     } , 3000);
       return;
     }
-
-
-   
-
       let idMaked = makeid(20);
   const users = await setDoc(doc(db, "users", idMaked ), {
     first_name: fName,
@@ -191,6 +193,7 @@ export const AuthContextProvider = ({ children }) => {
             first_name: fName,
             last_name: lName,
             email: email,
+            phone: userPhone,
             account_type : accountType,
           }
           await AsyncStorage.setItem('tashark_user', userObject);
@@ -223,6 +226,7 @@ export const AuthContextProvider = ({ children }) => {
         } else {
           setError(e.toString());
         }
+        resetStates();
 
       });
   };
@@ -335,34 +339,51 @@ export const AuthContextProvider = ({ children }) => {
     });
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    .then( async (userCredential) => {
+      try {
+        const userObject = {
+          id: idMaked,
+          first_name: fName,
+          last_name: lName,
+          email: email,
+          phone: userPhone,
+          account_type : accountType,
+        }
+        await AsyncStorage.setItem('tashark_user', userObject);
+
         const user = userCredential.user;
         setUser(user);
         setIsLoading(false);
-     
-       
-      })
-      .catch((e) => {
-        setIsLoading(false);
-       
-        if (e.code === "auth/email-already-in-use") {
-          setError("الايميل موجود بالفعل , يرجى تسجيل الدخول");
-        } else if (e.code === "auth/invalid-email") {
-          setError("الايميل غير صحيح , يرجى كتابة الايميل بشكل صحيح");
-        } 
-         else if (e.code === "auth/weak-password") {
-          setError("كلمة المرور ضعيفة يرجى ادخال كلمة مرور أقوى");
-        } else if (e.code === "auth/network-request-failed") {
-          setError("حدث خطأ في الشبكة");
-        } else if (e.code === "auth/too-many-requests") {
-          setError("تم تجاوز عدد المحاولات المسموح به , يرجى المحاولة في وقت أخر");
-        } else if (e.code === "auth/user-disabled") {
-          setError("تم تعطيل حسابك , يرجى التواصل مع الدعم");
-        } else {
-          setError(e.toString());
-        }
 
-      });
+      } catch (error) {
+        console.log('Error storing data:', error);
+        setIsLoading(false);
+      }
+    })
+    .catch((e) => {
+      setIsLoading(false);
+     
+      if (e.code === "auth/email-already-in-use") {
+        setError("الايميل موجود بالفعل , يرجى تسجيل الدخول");
+      } else if (e.code === "auth/invalid-email") {
+        setError("الايميل غير صحيح , يرجى كتابة الايميل بشكل صحيح");
+      } 
+       else if (e.code === "auth/weak-password") {
+        setError("كلمة المرور ضعيفة يرجى ادخال كلمة مرور أقوى");
+      } else if (e.code === "auth/network-request-failed") {
+        setError("حدث خطأ في الشبكة");
+      } else if (e.code === "auth/too-many-requests") {
+        setError("تم تجاوز عدد المحاولات المسموح به , يرجى المحاولة في وقت أخر");
+      } else if (e.code === "auth/user-disabled") {
+        setError("تم تعطيل حسابك , يرجى التواصل مع الدعم");
+      } else {
+        setError(e.toString());
+      }
+
+      resetStates();
+
+    });
+
   };
 
   const onLogout = () => {
@@ -372,7 +393,7 @@ export const AuthContextProvider = ({ children }) => {
     });
   };
 
-  const editUserProfile =  async ( id , fName , lName , email , userThum ) => {
+  const editUserProfile =  async ( id , fName , lName , email ,  userPhone , userThum , callBack ) => {
 
     setIsLoading(true);
 
@@ -403,12 +424,22 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
 
+    if (userPhone == '' ) {
+      setError("يرجى ادخال رقم الهاتف الخاص بك");
+       setTimeout(() => {
+      setError('');
+      
+    } , 3000);
+      return;
+    }
+
     const existingValue = await AsyncStorage.getItem('tashark_user');
     const parsedValue = JSON.parse(existingValue);
     parsedValue.first_name = fName;
     parsedValue.last_name = lName;
     parsedValue.email = email;
-    parsedValue.thum = userThum?._j;
+    parsedValue.phone = userPhone;
+    parsedValue.thum = userThum ? userThum?._j : '';
     await AsyncStorage.setItem('tashark_user', JSON.stringify(parsedValue));
 
 
@@ -418,7 +449,8 @@ export const AuthContextProvider = ({ children }) => {
       first_name: fName,
       last_name: lName,
       email: email,
-      thum: userThum?._j
+      phone: userPhone,
+      thum: userThum ? userThum?._j : ''
     };
 
    await updateDoc(docRef, data);
@@ -427,7 +459,10 @@ export const AuthContextProvider = ({ children }) => {
     setIsLoading(false);
     setTimeout(() => {
       setSuccess(null);
-      
+      resetStates();
+      if (callBack) {
+        callBack();
+      }
     } , 3000);
 
   }

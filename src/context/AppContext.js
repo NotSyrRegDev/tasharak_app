@@ -11,7 +11,7 @@ export const AppContextProvider = ({ children }) => {
   const [ myFoundedProducts , setMyFoundedProducts ] = useState([]);
   const [ myRentedProducts , setMyRentedProducts ] = useState([]);
   const [ myFoundedAddresses , setMyFoundedAddresses ] = useState([]);
-
+  const [modalVisible, setModalVisible] = useState(false);
  
   const [objectLocation , setObjectLocation] = useState({
     latitude: 24.68204,
@@ -23,7 +23,7 @@ export const AppContextProvider = ({ children }) => {
     longitude: 46.68725,
     latitude: 24.68204
   });
-  const [allProducts , setAllProducts] = useState([]);
+ 
   const [foundedProducts , setFoundedProducts] = useState([]);
 
   const [categoryArray , setCategoriesArray] = useState([]);
@@ -70,25 +70,7 @@ export const AppContextProvider = ({ children }) => {
     getCategoriesData();
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-  
-    const getAllProducts = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'products'));
-        const allProducts = querySnapshot.docs.map((doc) => {
-          const productData = doc.data();
-          productData.id = doc.id;
-          return productData;
-        });
-        setAllProducts(allProducts);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-      }
-    };
-    getAllProducts();
-  }, []);
+
 
   const addProduct = async () => {
   
@@ -103,6 +85,7 @@ export const AppContextProvider = ({ children }) => {
 
     try {
       const products = await setDoc(doc(db, 'products', idMaked), {
+        is_available: true,
         product_name: productName,
         product_desc: productDesc,
         product_category: categoryName,
@@ -128,7 +111,7 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const editProduct = async ( productName , productDesc , categoryName , tagsProductArray , productCase , productCount , dailyRentPrice , weekRentPrice , monthlyRentPrice , minRentalPrice , maxRentalPrice , deliveryWay , insurancePrice , insuranceStatus , deliveryPlan , selectedImages , draggableMarkerCoord , product_id ) => {
+  const editProduct = async ( productName , productDesc , categoryName , tagsProductArray , productCase , productCount , dailyRentPrice , weekRentPrice , monthlyRentPrice , minRentalPrice , maxRentalPrice , deliveryWay , insurancePrice , insuranceStatus , deliveryPlan , selectedImages , draggableMarkerCoord , product_id , avaliable , cityLoc , distLoc , streetLoc ) => {
 
     try {
 
@@ -144,11 +127,19 @@ export const AppContextProvider = ({ children }) => {
         insurancePrice,
         insuranceStatus,
         deliveryPlan,
+        productCount,
       }
      ] ;
       const docRef = doc(db, "products", product_id );
 
+      let location_detailsObj = {
+        cityLocation: cityLoc,
+        districyLocation: distLoc,
+        streetLocation: streetLoc,
+      }
+
       const data = {
+        is_available: avaliable,
         product_name: productName,
         product_desc: productDesc,
         product_category: categoryName,
@@ -156,6 +147,7 @@ export const AppContextProvider = ({ children }) => {
         productAdditional: productAdditional,
         product_images: selectedImages,
         product_location: draggableMarkerCoord,
+        location_details: location_detailsObj
 
       };
   
@@ -276,8 +268,6 @@ export const AppContextProvider = ({ children }) => {
         )
       );
       const querySnapshot = await getDocs(q);
-    
-      // Process the querySnapshot and retrieve the matching products with IDs
       const matchingProducts = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     
       setFoundedProducts(matchingProducts);
@@ -347,7 +337,7 @@ export const AppContextProvider = ({ children }) => {
     }
   }
 
-  const addAddress = async ( addressName, addressStreet , addressCity , address_coordinates , userId) => {
+  const addAddress = async ( addressName, addressCity , addressStreet ,   address_coordinates , userId , districyLocation) => {
     setIsLoading(true);
 
     let idMaked = makeid(20);
@@ -357,6 +347,7 @@ export const AppContextProvider = ({ children }) => {
         address_name: addressName,
         address_city: addressCity,
         address_street: addressStreet,
+        address_districty: districyLocation,
         address_codinates: address_coordinates,
         user_id: userId
       });
@@ -634,7 +625,6 @@ export const AppContextProvider = ({ children }) => {
         setProductImages,
         setProductLocation,
         searchProduct,
-        allProducts,
         foundedProducts,
         setObjectLocation,
         objectLocation,
@@ -660,7 +650,9 @@ export const AppContextProvider = ({ children }) => {
         addSellerRating,
         addProductRating,
         addDeliveryRating,
-        deleteFromFavourite
+        deleteFromFavourite,
+        setModalVisible,
+        modalVisible
 
 
        }}

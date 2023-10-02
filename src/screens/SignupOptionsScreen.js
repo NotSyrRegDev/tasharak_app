@@ -16,18 +16,6 @@ const SignupOptionsScreen = ( { navigation } ) => {
     <View  >
 
 <StatusBar translucent backgroundColor="black" />
- { /* TOP HEADER TEXT */ }
- <View className="flex items-start mt-10  pb-5"   >
-
- <Text className="text-3xl text-right text-black"  style={styles.title} > إنشاء حساب  </Text>
-
- <Text className="mt-4  text-right text-black text-xl" sstyle={styles.subtitle} >   إنشاء حساب شخصي أو حساب شركة </Text>
-
-
-
- </View>
-
- { /* Signup Boxes */ }
 
  <View className="mt-5 px-6" style={styles.boxContianer}   >
 
@@ -71,7 +59,7 @@ onPress={() => navigation.navigate('SignupScreen')}>
 </View>
 </TouchableOpacity>
 
-<TouchableOpacity
+{/* <TouchableOpacity
 className="mt-5  rounded-full p-3"
 style={styles.button}
 onPress={() => navigation.navigate('LoginScreen')}>
@@ -80,9 +68,9 @@ onPress={() => navigation.navigate('LoginScreen')}>
 <Text style={styles.buttonText}> التسجيل من خلال جوجل</Text>
 </View>
 
-</TouchableOpacity>
+</TouchableOpacity> */}
 
-<TouchableOpacity
+{/* <TouchableOpacity
 className="mt-5  rounded-full p-3"
 style={styles.button}
 onPress={() => navigation.navigate('LoginScreen')}>
@@ -91,7 +79,7 @@ onPress={() => navigation.navigate('LoginScreen')}>
 <Text style={styles.buttonText}> التسجيل من خلال ابل</Text>
 </View>
 
-</TouchableOpacity>
+</TouchableOpacity> */}
 
 <TouchableOpacity
   className="mt-5 p-3"
@@ -103,10 +91,13 @@ onPress={() => navigation.navigate('LoginScreen')}>
  ) : (
    <View className="mt-10"  >
 
-<Text className="mt-2  text-center text-black text-lg" sstyle={styles.subtitle} >   أنشئ حساب شركة لكي تستأجر و تؤجر الأغراض </Text>
+
 <View className="" >
 
-   <View className="px-6 mt-2"  >
+  {accountType == "company" && (
+    <View className="px-6 mt-2"  >
+
+    <Text className="mt-2  text-center text-black text-lg" sstyle={styles.subtitle} >   أنشئ حساب شركة لكي تستأجر و تؤجر الأغراض </Text>
    { /* SINGLE ACCOUNT SETTING */}
 <View className="flex-row items-center mt-5" >
 <Ionicons name="ellipse" size={20} color="#007FB7" className="font-bold" />
@@ -145,6 +136,8 @@ onPress={() => navigation.navigate('LoginScreen')}>
 
    </View>
 
+  ) }
+
 </View>
 
 <View className="flex-col items-center justift-center"  >
@@ -160,7 +153,7 @@ onPress={() => navigation.navigate('SignupScreen')}>
 </View>
 </TouchableOpacity>
 
-<TouchableOpacity
+{/* <TouchableOpacity
 className="mt-5  rounded-full p-3"
 style={styles.button}
 onPress={() => navigation.navigate('LoginScreen')}>
@@ -169,9 +162,9 @@ onPress={() => navigation.navigate('LoginScreen')}>
 <Text style={styles.buttonText}> التسجيل من خلال جوجل</Text>
 </View>
 
-</TouchableOpacity>
+</TouchableOpacity> */}
 
-<TouchableOpacity
+{/* <TouchableOpacity
 className="mt-5  rounded-full p-3"
 style={styles.button}
 onPress={() => navigation.navigate('LoginScreen')}>
@@ -180,7 +173,7 @@ onPress={() => navigation.navigate('LoginScreen')}>
 <Text style={styles.buttonText}> التسجيل من خلال ابل</Text>
 </View>
 
-</TouchableOpacity>
+</TouchableOpacity> */}
 
 <TouchableOpacity
   className="mt-5 p-3"

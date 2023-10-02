@@ -1,12 +1,9 @@
 import {StyleSheet , Image , TouchableOpacity , Modal  , View , Text } from 'react-native';
-import {useState} from 'react';
+import {useContext} from 'react';
 import { COLORS, FONTFAMILY } from '../theme/theme';
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import CategoryScreen from '../screens/CategoryScreen';
-import MyOrdersScreen from '../screens/MyOrdersScreen';
 import LoadingScreen from '../screens/LoadingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -17,17 +14,15 @@ import FaqScreen from '../screens/FaqScreen';
 import ContactUsScreen from '../screens/ContactUsScreen';
 import SignupOptionsScreen from '../screens/SignupOptionsScreen';
 import ForgetPasswordScreen from '../screens/ForgetPasswordScreen';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import AddScreenCategory from '../screens/AddScreenCategory';
-import { LinearGradient } from 'expo-linear-gradient';
-import AccountScreenLogin from '../screens/AccountScreenLogin';
 import CountriesScreen from '../screens/CountriesScreen';
 import CountrySubScreen from '../screens/CountrySubScreen';
 import WhoWeAreScreen from '../screens/WhoWeAreScreen';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import NeedLoginScreen from '../screens/NeedLoginScreen';
 import SearchScreen from '../screens/SearchScreen';
 import LazyWaitingScreen from '../screens/LazyWaitingScreen';
+import { HomeTabs } from './TapNavigator';
+import { HeaderScreenGoBack, HeaderSubCategory } from '../common/CommonHeader';
+import { AppContext } from '../context/AppContext';
 
 const Stack = createStackNavigator();
 
@@ -35,172 +30,8 @@ export const AppNavigator = () => {
 
   const Tab = createBottomTabNavigator();
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const { setModalVisible , modalVisible } = useContext(AppContext);
 
-  { /*  TABS   */   }
-
-  function HomeStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen}  options={{headerShown: false}}  />
-      </Stack.Navigator>
-    );
-  }
-  
-  function CateogryStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="CategoryScreen" component={CategoryScreen} options={{headerShown: false}}  />
-      </Stack.Navigator>
-    );
-  }
-  
-  function AddStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="NeedLoginScreen" component={NeedLoginScreen} options={{headerShown: false}}  />
-      </Stack.Navigator>
-    );
-  }
-
-  function MyOrdersStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="MyOrdersScreen" component={MyOrdersScreen} options={{headerShown: false}}  />
-      </Stack.Navigator>
-    );
-  }
-
-  function MyAccountStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="AccountScreenLogin" component={AccountScreenLogin} options={{headerShown: false}}  />
-      </Stack.Navigator>
-    );
-  }
-
-  /* HOME TABS INITIALIZE */
-
-
-  function HomeTabs() {
-    return (
-
-      <Tab.Navigator
-      initialRouteName='HomeScreen'
-      screenOptions={{ 
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          height: 70,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          elevation: 5, // Add elevation for the box shadow effect
-          shadowColor: '#000', // Set shadow color
-          shadowOffset: { width: 0, height: 2 }, // Set shadow offset
-          shadowOpacity: 0.25, // Set shadow opacity
-          shadowRadius: 3.84, // Set shadow radius
-        },
-        tabBarItemStyle: {
-          marginTop: 25,
-          borderRadius: 10,
-        }
-      }}
-    >
-        <Tab.Screen
-          name="HomeScreen"
-          component={HomeStack}
-          options={({ route }) => ({
-          title: '',
-          tabBarIcon: ({ color, focused }) => {
-            let iconSource = focused
-              ? require('../assets/icons/bottom_icons/Home-Blue.png')
-              : require('../assets/icons/bottom_icons/Home.png');
-            return <Image source={iconSource} style={styles.icon_bottom} />;
-          },
-          headerTitleStyle: styles.headerTitle,
-          headerTitleContainerStyle: styles.headerTitleContainer,
-        })}
-        />
-  
-     <Tab.Screen
-        name="CategoryScreen"
-        component={CateogryStack}
-        options={({ route }) => ({
-          title: '',
-          tabBarIcon: ({ color, focused }) => {
-            let iconSource = focused
-              ? require('../assets/icons/bottom_icons/Category-Blue.png')
-              : require('../assets/icons/bottom_icons/Category.png');
-            return <Image source={iconSource} style={styles.icon_bottom} />;
-          },
-          headerTitleStyle: styles.headerTitle,
-          headerTitleContainerStyle: styles.headerTitleContainer,
-        })}
-      />
-  
-        <Tab.Screen
-          name="NeedLoginScreen"
-          component={AddStack}
-          options={{
-  title: '',
-  tabBarIcon: ({ color }) => (
-    <LinearGradient
-      colors={['#22BCA0', '#007FB6']}
-      start={[0, 0]}
-      end={[1, 0]}
-      style={{
-        width: 65,
-        height: 65,
-        borderRadius: 500,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: -25,
-      }}
-    >
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Ionicons name="add-sharp" size={30} color="#fff" style={{ fontWeight: 'bold' }} />
-      </TouchableOpacity>
-    </LinearGradient>
-  ),
-  headerTitleStyle: styles.headerTitle,
-  headerTitleContainerStyle: styles.headerTitleContainer,
-}}
-        />
-  
-        <Tab.Screen
-          name="MyOrdersScreen"
-          component={MyOrdersStack}
-          options={({ route }) => ({
-          title: '',
-          tabBarIcon: ({ color, focused }) => {
-            let iconSource = focused
-              ? require('../assets/icons/bottom_icons/Store-Blue.png')
-              : require('../assets/icons/bottom_icons/Store.png');
-            return <Image source={iconSource} style={styles.icon_bottom} />;
-          },
-          headerTitleStyle: styles.headerTitle,
-          headerTitleContainerStyle: styles.headerTitleContainer,
-        })}
-        />
-  
-        <Tab.Screen
-          name="AccountScreenLogin"
-          component={MyAccountStack}
-          options={({ route }) => ({
-          title: '',
-          tabBarIcon: ({ color, focused }) => {
-            let iconSource = focused
-              ? require('../assets/icons/bottom_icons/Profile-Blue.png')
-              : require('../assets/icons/bottom_icons/Profile.png');
-            return <Image source={iconSource} style={styles.icon_bottom} />;
-          },
-          headerTitleStyle: styles.headerTitle,
-          headerTitleContainerStyle: styles.headerTitleContainer,
-        })}
-        />
-      </Tab.Navigator>
-    );
-  }
 
   return (
         
@@ -243,39 +74,77 @@ export const AppNavigator = () => {
 
 </Modal>
 
-<Stack.Navigator initialRouteName='Loading' screenOptions={{ headerShown: false }}>
+<Stack.Navigator initialRouteName='Loading'  >
 
-  <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+  <Stack.Screen name="HomeTabs" component={HomeTabs} options={{
+          title: 'Home',
+          header: () => <View />
+        }}  />
 
   <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
 
   <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
 
-  <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="LoginScreen" component={LoginScreen} options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تسجيل الدخول"} />,
+        })} />
 
-  <Stack.Screen name="SignupOptionsScreen" component={SignupOptionsScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SignupOptionsScreen" component={SignupOptionsScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إنشاء حساب"} />,
+        })}
+         />
 
-  <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SignupScreen" component={SignupScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إنشاء حساب"} />,
+        })}
+   />
 
   <Stack.Screen name="ForgetPasswordScreen" component={ForgetPasswordScreen} options={{ headerShown: false }} />
 
 
-  <Stack.Screen name="CountriesScreen" component={CountriesScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="CountriesScreen" component={CountriesScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إختيار الدولة"} />,
+        })}
+   />
 
-  <Stack.Screen name="CountrySubScreen" component={CountrySubScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="CountrySubScreen" component={CountrySubScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"حدد المدينة"} />,
+        })}
+   />
 
-  <Stack.Screen name="WhoWeAreScreen" component={WhoWeAreScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="WhoWeAreScreen" component={WhoWeAreScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"من نحن"} />,
+        })}
+   />
 
-  <Stack.Screen name="SingleProductScreen" component={SingleProductScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SingleProductScreen" component={SingleProductScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تفاصيل الغرض"} />,
+        })}
+   />
 
-  <Stack.Screen name="SubCategoryScreen" component={SubCategoryScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SubCategoryScreen" component={SubCategoryScreen}  options={({ navigation , route }) => ({
+          header: () => <HeaderSubCategory navigation={navigation} title={route.params.categoryName} />,
+        })} />
 
-  <Stack.Screen name="FaqScreen" component={FaqScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="FaqScreen" component={FaqScreen}  
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"الاسئلة الشائعة"} />,
+        })} />
 
-  <Stack.Screen name="ContactUsScreen" component={ContactUsScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="ContactUsScreen" component={ContactUsScreen} options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تواصل معنا"} />,
+        })} />
   
 
-  <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SearchScreen" component={SearchScreen}  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"نتائج البحث"} />,
+        })} />
 
   <Stack.Screen name="LazyWaitingScreen" component={LazyWaitingScreen} options={{ headerShown: false }} />
   

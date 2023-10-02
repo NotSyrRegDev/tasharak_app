@@ -1,11 +1,12 @@
 import { View, Text , SafeAreaView , StyleSheet , StatusBar , TouchableOpacity  , Image , KeyboardAvoidingView , ScrollView , TextInput , Platform } from 'react-native'
-import React, { useContext , useState  } from 'react'
+import React, { useContext , useState , useRef  } from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import { AuthenticationContext } from '../context/AuthContext';
 import TopProfileNavigator from '../components/TopProfileNavigator';
 
 
 const ChangePasswordScreen = ({ navigation }) => {
+  const scrollViewRef = useRef();
 
     const {  updateUserPassword , isLoading, error , success } = useContext(AuthenticationContext);
 
@@ -25,35 +26,32 @@ const ChangePasswordScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       
-      <ScrollView>
-
-
       <View style={styles.container}  >
 
       <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-    <TopProfileNavigator navigation={navigation} text={"تغيير كلمة المرور"} />
-
-      { /* END TOP HEADER TEXT */ }
-
 
       { /* NOTIFCATIONS COLUMN */ }
-
-
       <View className="px-6" >
 
       <View className="mt-16" >
 
       {error && (
-          <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
+        </>
+      )}
 
         {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
           <View className=" p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-start" >
             <Text style={styles.errorText}  >{success}</Text>
           </View>
+          </>
+        
         )}
 
         <KeyboardAvoidingView
@@ -122,17 +120,7 @@ const ChangePasswordScreen = ({ navigation }) => {
       </View>
 
 
-      { /* END NOTIFCATIONS COLUMN */ }
-
       </View>
-
-      </ScrollView>
-  
-
-    
-
-
-
     </SafeAreaView>
   )
 }

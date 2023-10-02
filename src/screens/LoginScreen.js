@@ -1,11 +1,13 @@
 import { View, Text ,StatusBar , StyleSheet , SafeAreaView , Image ,TouchableOpacity , TextInput  ,ScrollView, KeyboardAvoidingView , Platform , Keyboard } from 'react-native'
-import React, { useState , useContext , useEffect } from 'react'
+import React, { useState , useContext , useEffect  , useRef} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import {  AuthenticationContext } from '../context/AuthContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ActivityIndicator, Colors } from "react-native-paper";
 
 const LoginScreen = ( { navigation } ) => {
+
+  const scrollViewRef = useRef();
 
     const [ loginContainerShow , setLoginContainerShow ] = useState(false);
     const [userEmail, setEmail] = useState('');
@@ -37,11 +39,18 @@ const LoginScreen = ( { navigation } ) => {
 
   return (
     <SafeAreaView   >
- <ScrollView contentContainerStyle={styles.container} >
- <KeyboardAvoidingView style={styles.keyboardContianer}   >
-<View  >
 
- <StatusBar translucent backgroundColor="black" />
+      
+      <ScrollView
+     
+  ref={scrollViewRef}
+  contentContainerStyle={styles.container} 
+      >
+
+      <KeyboardAvoidingView style={styles.keyboardContianer}   >
+    <View  >
+
+    <StatusBar translucent backgroundColor="black" />
   { /* TOP HEADER TEXT */ }
   <View className="flex items-start mt-16 pb-5" style={{ paddingHorizontal: 10 }}  >
 
@@ -66,7 +75,7 @@ const LoginScreen = ( { navigation } ) => {
     </View>
   </TouchableOpacity>
 
-<TouchableOpacity
+{/* <TouchableOpacity
   className="mt-5  rounded-full p-3"
     style={styles.button}
     onPress={() => signInWithGoogleProvider() }>
@@ -86,7 +95,7 @@ const LoginScreen = ( { navigation } ) => {
     <Text style={styles.buttonText}> التسجيل من خلال ابل</Text>
     </View>
    
-  </TouchableOpacity>
+  </TouchableOpacity> */}
 
   { /* SIGN UP OPTIONS END */}
 
@@ -94,23 +103,20 @@ const LoginScreen = ( { navigation } ) => {
    
     <View className="w-full max-w-sm mt-10"  >
     
-  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-  <View style={{ flex: 1, height: 2, backgroundColor: '#DADADA' }} />
-  <Text style={styles.hrTexterrorText}>   أو </Text>
-  <View style={{ flex: 1, height: 2, backgroundColor: '#DADADA' }} />
-  </View>
-
-
   <View className="mt-12" >
 
 
 
   {error && (
-          <View className=" p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-            <Text style={styles.errorText}  >{error}</Text>
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        )}
-   
+        </>
+      )}
+
+ 
 
   <View className="mb-8">
   <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">

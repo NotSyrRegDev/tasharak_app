@@ -1,4 +1,4 @@
-import { View, Text  , StyleSheet , StatusBar  , ScrollView} from 'react-native'
+import { View, Text  , StyleSheet , StatusBar  , ScrollView , SafeAreaView} from 'react-native'
 import React , {useContext} from 'react'
 import { FONTFAMILY , COLORS } from '../theme/theme';
 import Category from '../components/Category';
@@ -12,45 +12,40 @@ const CategoryScreen = ({ navigation }) => {
 
   return (
    
+    <SafeAreaView>
+
+<ScrollView>
+
+{isLoading && (
+ <LoadingContainer />
+)}
+
+<View style={styles.container}  >
+
+<StatusBar translucent backgroundColor="black" />
+
+{ /* CATEGORIES GRID */ }
+
+<View className="flex-row flex-wrap mx-2 mt-5" >
+
+{categoryArray && categoryArray.map(({id , category_name , category_image}) => (
+<Category id={id} title={category_name} image={category_image} navigation={navigation}  />
+))}
+
+
+</View>
+
+{ /* END CATEGORIES GRID */ }
+
+</View>
+
+</ScrollView>
+
+
+
+    </SafeAreaView>
       
-      <ScrollView>
-
-      {isLoading && (
-       <LoadingContainer />
-      )}
-
-      <View style={styles.container}  >
-
-      <StatusBar translucent backgroundColor="black" />
-      { /* TOP HEADER TEXT */ }
-      <View className="flex items-center pt-28 pb-5" style={styles.topAreaHeadins}  >
-  
-      <Text className="text-3xl text-center text-white mb-8"  style={styles.title} > التصنيفات  </Text>
-      <SearchBar navigation={navigation} placeholder={"عن ماذا تبحث"} icon={"search"} />
-    
-  
-      </View>
-
-      { /* END TOP HEADER TEXT */ }
-
-
-      { /* CATEGORIES GRID */ }
-
-      <View className="flex-row flex-wrap mx-2 mt-5" >
-
-    {categoryArray && categoryArray.map(({id , category_name , category_image}) => (
-     <Category id={id} title={category_name} image={category_image} navigation={navigation}  />
-    ))}
-
-
-      </View>
-
-      { /* END CATEGORIES GRID */ }
-
-      </View>
-
-      </ScrollView>
-
+   
    
   )
 }

@@ -39,6 +39,9 @@ import AddProductRating from '../screens/AddProductRating';
 import AddDeliveryRating from '../screens/AddDeliveryRating';
 import AddSellerRating from '../screens/AddSellerRating';
 import LazyWaitingScreen from '../screens/LazyWaitingScreen';
+import LoadingScreenAuth from '../screens/LoadingScreenAuth';
+import TabNavigatorAuth from './TapNavigatorAuth';
+import { HeaderScreenGoBack, HeaderSubCategory } from '../common/CommonHeader';
 
 
 const Stack = createStackNavigator();
@@ -49,60 +52,144 @@ export const AuthNavigator = () => {
   return (
        
      
-<Stack.Navigator initialRouteName='HomeTabs' screenOptions={{ headerShown: false }}>
+<Stack.Navigator initialRouteName='Loading' >
 
-  <Stack.Screen name="HomeTabs" component={TabNavigator} options={{ headerShown: false }} />
+  <Stack.Screen name="HomeTabs" component={TabNavigatorAuth} options={{ headerShown: false }} />
 
-  <Stack.Screen name="ForgetPasswordScreen" component={ForgetPasswordScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="Loading" component={LoadingScreenAuth} options={{ headerShown: false }} />
 
-  <Stack.Screen name="SingleProductScreen" component={SingleProductScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="ForgetPasswordScreen" component={ForgetPasswordScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إعادة تعيين كلمة المرور"} />,
+        })}
+   />
 
-  <Stack.Screen name="SubCategoryScreen" component={SubCategoryScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SingleProductScreen" component={SingleProductScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تفاصيل الغرض"} />,
+        })}
+   />
 
-  <Stack.Screen name="AddressesScreen" component={AddressesScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="SubCategoryScreen" component={SubCategoryScreen} 
+  options={({ navigation , route }) => ({
+          header: () => <HeaderSubCategory navigation={navigation} title={route.params.categoryName} />,
+        })}
+   />
 
-  <Stack.Screen name="ContactUsScreen" component={ContactUsScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="AddressesScreen" component={AddressesScreen} 
+       options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"العناوين"} />,
+        })}
+   />
 
-  <Stack.Screen name="CountriesScreen" component={CountriesScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="CountriesScreen" component={CountriesScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إختيار الدولة"} />,
+        })}
+   />
 
-  <Stack.Screen name="CountrySubScreen" component={CountrySubScreen} options={{ headerShown: false }} />
+<Stack.Screen name="WhoWeAreScreen" component={WhoWeAreScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"من نحن"} />,
+        })}
+   />
 
-  <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="CountrySubScreen" component={CountrySubScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"حدد المدينة"} />,
+        })}
+   />
 
-  <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"الإشعارات"} />,
+        })}
+   />
 
-  <Stack.Screen name="MyFavouritesScreen" component={MyFavouritesScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تعديل الحساب"} />,
+        })}
+   />
 
-  <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="MyFavouritesScreen" component={MyFavouritesScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"المفضلة"} />,
+        })}
+   />
 
-  <Stack.Screen name="EditProductScreen" component={EditProductScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"أغراضي"} />,
+        })} />
 
-  <Stack.Screen name="MessagesScreen" component={MessagesScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="EditProductScreen" component={EditProductScreen} 
+     options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تعديل المنتج"} />,
+        })}
+   />
 
-  <Stack.Screen name="MyRevenueScreen" component={MyRevenueScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="MessagesScreen" component={MessagesScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"الرسائل"} />,
+        })}
+   />
 
-  <Stack.Screen name="FaqScreen" component={FaqScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="MyRevenueScreen" component={MyRevenueScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إيراداتي"} />,
+        })}
+   />
 
-  <Stack.Screen name="WhoWeAreScreen" component={WhoWeAreScreen} options={{ headerShown: false }} />
 
-  <Stack.Screen name="MyPointsScreen" component={MyPointsScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="FaqScreen" component={FaqScreen}  
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"الاسئلة الشائعة"} />,
+        })} />
+
+  <Stack.Screen name="ContactUsScreen" component={ContactUsScreen} options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تواصل معنا"} />,
+        })} />
+  
+
+
+  <Stack.Screen name="MyPointsScreen" component={MyPointsScreen} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"نقاطي"} />,
+        })}
+   />
 
 
   <Stack.Screen name="AddScreenDetails" component={AddScreenDetails} options={{ headerShown: false }} />
 
-  <Stack.Screen name="AddAddressDetails" component={AddAddressDetails} options={{ headerShown: false }} />
+  <Stack.Screen name="AddAddressDetails" component={AddAddressDetails} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"إضافة عنوان"} />,
+        })}
+   />
 
   <Stack.Screen name="AddScreenImages" component={AddScreenImages} options={{ headerShown: false }} />
 
-  <Stack.Screen name="AddScreenAddress" component={AddScreenAddress} options={{ headerShown: false }} />
+  <Stack.Screen name="AddScreenAddress" component={AddScreenAddress}  
+   options={{ headerShown: false }} />
 
-  <Stack.Screen name="EditAddressScreen" component={EditAddressScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="EditAddressScreen" component={EditAddressScreen}  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تعديل العنوان"} />,
+        })} />
 
   <Stack.Screen name="AddScreenSuccess" component={AddScreenSuccess} options={{ headerShown: false }} />
 
-  <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"تغيير كلمة المرور"} />,
+        })}
+   />
 
-  <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
+
+  <Stack.Screen name="SearchScreen" component={SearchScreen} 
+   options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"نتائج البحث"} />,
+        })} />
 
   <Stack.Screen name="BookingDateScreen" component={BookingDateScreen} options={{ headerShown: false }} />
 
@@ -110,7 +197,9 @@ export const AuthNavigator = () => {
 
   <Stack.Screen name="BookingTimeScreen" component={BookingTimeScreen} options={{ headerShown: false }} />
 
-  <Stack.Screen name="BookingOrderSummaryScreen" component={BookingOrderSummaryScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="BookingOrderSummaryScreen" component={BookingOrderSummaryScreen} 
+  
+   />
 
   <Stack.Screen name="BookingPaymentScreen" component={BookingPaymentScreen} options={{ headerShown: false }} />
 
@@ -118,11 +207,23 @@ export const AuthNavigator = () => {
 
   <Stack.Screen name="BookingDetailScreen" component={BookingDetailScreen} options={{ headerShown: false }} />
 
-  <Stack.Screen name="AddSellerRating" component={AddSellerRating} options={{ headerShown: false }} />
+  <Stack.Screen name="AddSellerRating" component={AddSellerRating} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"أكتب تقييمك"} />,
+        })}
+   />
 
-  <Stack.Screen name="AddProductRating" component={AddProductRating} options={{ headerShown: false }} />
+  <Stack.Screen name="AddProductRating" component={AddProductRating} 
+  options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"أكتب تقييمك"} />,
+        })}
+         />
 
-  <Stack.Screen name="AddDeliveryRating" component={AddDeliveryRating} options={{ headerShown: false }} />
+  <Stack.Screen name="AddDeliveryRating" component={AddDeliveryRating} 
+    options={({ navigation }) => ({
+          header: () => <HeaderScreenGoBack navigation={navigation} title={"أكتب تقييمك"} />,
+        })}
+   />
 
   <Stack.Screen name="LazyWaitingScreen" component={LazyWaitingScreen} options={{ headerShown: false }} />
   

@@ -65,28 +65,11 @@ const SignupScreen = ({ navigation }) => {
 <View style={[ styles.container , isKeyboardOpen ? styles.keyboardOn : '' ]}  >
 
  <StatusBar translucent backgroundColor="black" />
-  { /* TOP HEADER TEXT */ }
-  <View className="flex flex-row items-center  pt-24 pb-5" style={styles.topAreaHeadins}  >
-
-<View>
-<TouchableOpacity className="px-2" onPress={() => navigation.navigate('SignupOptionsScreen') } >
-<SimpleLineIcons name="arrow-right" size={22} color="#fff" />
-</TouchableOpacity>
-</View>
-
-<View>
-<Text className="text-3xl text-center text-white"  style={styles.title} > أنشئ حساب </Text>
-
-<Text className="mt-3  text-center text-white text-base" style={styles.font} >   إنشاء حساب شخصي أو حساب شركة </Text>
-</View>
-  
-
-  </View>
 
   { /* SIGNUP BUTTONS */ }
  <View style={styles.headerContent}  >
 
-      <View className="w-full max-w-sm mt-10 h-full" style={styles.headerContentInside} >
+      <View className="w-full max-w-sm mt-5 h-full" style={styles.headerContentInside} >
 
   <View className="mt-12" >
   {error && (

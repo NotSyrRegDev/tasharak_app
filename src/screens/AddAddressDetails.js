@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddAddressDetails = ({ navigation }) => {
 
+  const scrollViewRef = useRef();
+
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
   const [userId, setUserId] = useState('');
 
@@ -50,7 +52,7 @@ const AddAddressDetails = ({ navigation }) => {
   const [stepOne , setStepOne] = useState(true);
   const [stepTwo , setStepTwo] = useState(false);
 
-  const {   setError , error   , addAddress , success  } = useContext(AppContext);
+  const {   setError , error   , addAddress , success  , isLoading } = useContext(AppContext);
 
   const [draggableMarkerCoord, setDraggableMarkerCoord] = useState({
     longitude: 46.68725,
@@ -59,9 +61,9 @@ const AddAddressDetails = ({ navigation }) => {
 
   const [objectLocation , setObjectLocation] = useState({
     latitude: 24.68204,
-    latitudeDelta: 27.499085419977938,
+    latitudeDelta: 0.0922,
     longitude: 46.68725,
-    longitudeDelta: 15.952148000000022,
+    longitudeDelta: 0.0421,
   });
 
   useEffect(() => {
@@ -73,9 +75,7 @@ const AddAddressDetails = ({ navigation }) => {
         setLoading(false);
         return;
       }
-
       let currentLocation = await Location.getCurrentPositionAsync({});
-     
       const desiredZoomLevel = 10; // Adjust this as needed
       setObjectLocation({
         latitude: currentLocation.coords.latitude,
@@ -83,8 +83,6 @@ const AddAddressDetails = ({ navigation }) => {
         longitude: currentLocation.coords.longitude,
         longitudeDelta: 15.952148000000022,
       })
-
-      // Set initial draggable marker coordinate to user's location
       setDraggableMarkerCoord({
         longitude: currentLocation.coords.longitude,
         latitude: currentLocation.coords.latitude
@@ -96,6 +94,7 @@ const AddAddressDetails = ({ navigation }) => {
 
   const [ savedLoocation , setSavedLocation ] = useState('');
   const [ cityLoocation , setCityLocation ] = useState('');
+  const [districyLocation  ,setDistricyLocation] = useState('');
   const [ streetLoocation , setStreetLocation ] = useState('');
 
   const [loading ,setLoading] = useState(false);
@@ -104,12 +103,10 @@ const AddAddressDetails = ({ navigation }) => {
   Location.setGoogleApiKey("AIzaSyD5GUOMMrDY5Ml8JOQ5j7z7p9f8GaGCDBg");
     const mapRef = useRef();
 
-  const handleFullScreenMap = () => {
-    setFullScreen(!fullScreen);
-  }
+
 
   const handleAddAddress =  () => {
-    addAddress(savedLoocation , cityLoocation , streetLoocation , draggableMarkerCoord , userId);
+    addAddress(savedLoocation , cityLoocation  , streetLoocation , draggableMarkerCoord , userId , districyLocation);
 
     setTimeout(() => {
       navigation.navigate('MyAccountScreen');
@@ -134,11 +131,12 @@ const AddAddressDetails = ({ navigation }) => {
       clearError();
     }
 
-    if (streetLoocation == '') {
-      setError("يرجى ادخال الشارع");
+    if (districyLocation == '') {
+      setError("يرجى ادخال الحي");
       clearError();
     }
-    if ( savedLoocation !== '' && cityLoocation !== '' && streetLoocation !== ''   ) {
+
+    if ( savedLoocation !== '' && cityLoocation !== '' && districyLocation !== ''   ) {
       setStepOne(!stepOne);
       setStepTwo(!stepTwo);
     }
@@ -147,18 +145,18 @@ const AddAddressDetails = ({ navigation }) => {
   
   return (
     
-    <SafeAreaView style={[styles.container ,  isKeyboardOpen ? styles.keyboardOn : '' ]} >
+    <SafeAreaView  >
 
-    <ScrollView>
-    {!fullScreen  ? (
-      <View>
+    <ScrollView
+
+  ref={scrollViewRef}
+  contentContainerStyle={{ flexGrow: 1 }} 
+    >
+      <View  style={[styles.container ,  isKeyboardOpen ? styles.keyboardOn : '' ]} >
 
 
 <StatusBar translucent backgroundColor="black" />
 
-
-{ /* TOP HEADER TEXT */ }
-<TopProfileNavigator navigation={navigation} text={"إضافة عنوان"} />
 
 { /* CHOOSING CATEGORY */ }
 
@@ -166,13 +164,16 @@ const AddAddressDetails = ({ navigation }) => {
       <View style={styles.containerMargin} className="mt-10" >
 
       {error && (
-      <View className=" p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start" >
-        <Text style={styles.errorText}  >{error}</Text>
-      </View>
-    )}
+        <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-start">
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </>
+      )}
 
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+     
     >
 
 <View className="mb-8">
@@ -208,7 +209,22 @@ const AddAddressDetails = ({ navigation }) => {
 <View className="mb-8">
 
 <Text style={styles.textInput} className="block text-gray-700 font-bold mb-3" htmlFor="username">
-     الشارع  <Text className="text-red-500 text-base" > * </Text>  
+     الحي  <Text className="text-red-500 text-base" > * </Text>  
+    </Text>
+  <TextInput
+  style={styles.inputStyle}
+  className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
+  id="title"
+  placeholder="قم بادخل الحي"
+      value={districyLocation}
+      onChangeText={(text) => setDistricyLocation(text) }
+  />
+  </View>
+
+<View className="mb-8">
+
+<Text style={styles.textInput} className="block text-gray-700 font-bold mb-3" htmlFor="username">
+     الشارع  
     </Text>
   <TextInput
   style={styles.inputStyle}
@@ -271,13 +287,19 @@ const AddAddressDetails = ({ navigation }) => {
     <Text className="text-sm mb-2 text-center " syle={styles.errorText} >  فضلا قم بتحديد وسحب العلامة الخضراء على الخريطة لتوضيح مكان تواجد الغرض  </Text>
       </View>
      
-    <MapView
+  <View style={{ flex: 1 }}  className="h-96" >
+
+  <MapView
     className="realtive"
-     onPress={handleFullScreenMap}
     provider={PROVIDER_GOOGLE}
     ref={mapRef} 
     style={styles.map}
-    initialRegion={objectLocation}
+    initialRegion={{
+      latitude: objectLocation.latitude,
+    latitudeDelta: 0.0922,
+    longitude: objectLocation.longitude,
+    longitudeDelta: 0.0421,
+    }}
   >
   <Marker
     draggable
@@ -293,6 +315,8 @@ const AddAddressDetails = ({ navigation }) => {
 
     
   </MapView>
+  
+  </View>
 
   <View className="flex items-center mt-5" >
 
@@ -305,7 +329,12 @@ const AddAddressDetails = ({ navigation }) => {
   <Text style={styles.exploreButtonText}> الرجوع   </Text>
   </TouchableOpacity>
 
-  <TouchableOpacity
+      {isLoading ? (
+          <View className="mt-5 mb-5" > 
+          <ActivityIndicator animating={true} color={'#007FB7'} />
+          </View>
+      ) : (
+        <TouchableOpacity
   className="text-center rounded-full p-2"
   style={styles.button}
   onPress={() => handleAddAddress() }
@@ -313,6 +342,8 @@ const AddAddressDetails = ({ navigation }) => {
 
   <Text style={styles.buttonText}> تأكيد العنوان  </Text>
   </TouchableOpacity>
+      )}
+
   </View>
 
   </View>
@@ -326,42 +357,6 @@ const AddAddressDetails = ({ navigation }) => {
 { /* END CHOOSING CATEGORY */ }
 
 </View>
-) :(
-  <View style={styles.container} >
-  <MapView
-   
-  className="realtive"
-        provider={PROVIDER_GOOGLE}
-        ref={mapRef} 
-        style={styles.fullMap}
-        initialRegion={objectLocation}
-      >
-
-    <Marker
-      draggable
-      pinColor="#22BC9F"
-      coordinate={draggableMarkerCoord}
-      onDragEnd={(e) => setDraggableMarkerCoord(e.nativeEvent.coordinate)}
-    >
-      <Callout>
-        <Text>هذه المكان الذي سيظهر للمستخدمين</Text>
-      </Callout>
-    </Marker>
-
-       <TouchableOpacity onPress={() => handleFullScreenMap() } className="absolute top-2 right-2 w-12 h-12 rounded-lg  bg-white flex items-center justify-center shadow-lg" >
-      
-      <Octicons name="screen-full" size={26} color="#007FB7" />
-     
-      </TouchableOpacity>
-       
-      </MapView>
-  </View>
-
-)}
-
-
-  
-    
 
     </ScrollView>
       

@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "tasharak_app",
+    "name": "Tasharak App",
     "slug": "tasharak_app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-ts.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -15,16 +15,18 @@
       "**/*"
     ],
     "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tasharak_app"
+      "package": "com.tasharak_app",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,8 +36,12 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "cbc04ce9-68b8-4d32-8736-bf05c4abdf80"
+        "projectId": "cfc23906-0465-4eb8-99d5-0e25a622509f"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cfc23906-0465-4eb8-99d5-0e25a622509f"
     }
+    
   }
 }

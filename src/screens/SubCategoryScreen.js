@@ -50,30 +50,10 @@ const SubCategoryScreen = ({ navigation , route }) => {
 
       <StatusBar translucent backgroundColor="black" />
       { /* TOP HEADER TEXT */ }
-      <View className="pt-16 pb-5" >
-      <View className="flex-row items-center relative"   >
 
     
-<TouchableOpacity className="px-4" onPress={() => navigation.goBack() } >
-<SimpleLineIcons name="arrow-right" size={24} color="#007FB7" />
-</TouchableOpacity>
-  
-<Text className="text-xl text-center"  style={styles.titleSub} > {route.params.categoryName}  </Text>
 
 
-</View>
-</View>
-
-      <View style={styles.topAreaHeadins} >
-      <SearchBar navigation={navigation} placeholder={"عن ماذا تبحث"} icon={"search"} />
-      </View>
-   
-    
-
-      { /* END TOP HEADER TEXT */ }
-
-
-      { /* CATEGORIES GRID */ }
 
       <View className="flex-row flex-wrap items-center justify-center mt-8" >
     
@@ -118,12 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     
   },
-  titleSub: {
-    color: COLORS.LightBLue,
-    fontFamily: FONTFAMILY.font_bold,
-    fontWeight: 'bold',
-    
-  },
+
   searchBarContainer: {
     flexDirection: 'row',
     backgroundColor: '#FFF',
